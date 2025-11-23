@@ -1,0 +1,72 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <h2>Sign Up</h2>
+    <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+      <div class="form-group">
+        <label for="username">Username *</label>
+        <input type="text" id="username" name="username" [(ngModel)]="username" required minlength="3"
+          pattern="[a-zA-Z0-9_]+" class="form-control" [ngClass]="{'error': hasFieldError('username')}"
+          placeholder="Enter your username" />
+        <div *ngIf="hasFieldError('username')" class="field-error">
+          {{ getFieldError('username') }}
+        </div>
+        <div class="field-hint">3+ characters, letters, numbers, and underscores only</div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" [(ngModel)]="email" required class="form-control"
+          [ngClass]="{'error': hasFieldError('email')}" placeholder="Enter your email" />
+        <div *ngIf="hasFieldError('email')" class="field-error">
+          {{ getFieldError('email') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password *</label>
+        <input type="password" id="password" name="password" [(ngModel)]="password" required minlength="6"
+          maxlength="128" class="form-control" [ngClass]="{'error': hasFieldError('password')}"
+          placeholder="Enter your password" />
+        <div *ngIf="hasFieldError('password')" class="field-error">
+          {{ getFieldError('password') }}
+        </div>
+        <div class="field-hint">6+ characters, must include uppercase, lowercase, and number</div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password *</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" [(ngModel)]="confirmPassword" required
+          class="form-control" [ngClass]="{'error': hasFieldError('confirmPassword')}"
+          placeholder="Confirm your password" />
+        <div *ngIf="hasFieldError('confirmPassword')" class="field-error">
+          {{ getFieldError('confirmPassword') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="role">Role *</label>
+        <select id="role" name="role" [(ngModel)]="role" required class="form-control"
+          [ngClass]="{'error': hasFieldError('role')}">
+          <option value="USER">User</option>
+          <option value="ADMIN">Admin</option>
+        </select>
+        <div *ngIf="hasFieldError('role')" class="field-error">
+          {{ getFieldError('role') }}
+        </div>
+        <div class="field-hint">Select your account role</div>
+      </div>
+
+      <div *ngIf="errors['submit']" class="error-message">
+        {{ errors['submit'] }}
+      </div>
+
+      <button type="submit" class="btn btn-primary" [disabled]="loading">
+        {{ loading ? 'Creating account...' : 'Sign Up' }}
+      </button>
+    </form>
+
+    <p class="auth-link">
+      Already have an account? <a routerLink="/login">Login</a>
+    </p>
+  </div>
+</div>

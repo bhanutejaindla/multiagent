@@ -1,0 +1,91 @@
+<div class="report-container">
+  <div class="report-header">
+    <div class="header-content">
+      <div>
+        <h1>Report #{{ reportId }}</h1>
+        <a routerLink="/dashboard" class="btn-link">← Back to Dashboard</a>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" (click)="editReport()">Edit</button>
+        <button class="btn btn-secondary" (click)="downloadReport('docx')">Download DOCX</button>
+        <button class="btn btn-secondary" (click)="downloadReport('pdf')">Download PDF</button>
+        <button class="btn btn-primary" (click)="toggleChat()">
+          {{ showChat ? 'Hide' : 'Show' }} Chat
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="report-content-wrapper">
+    <div class="report-content" [class.with-chat]="showChat">
+      <div *ngIf="loading" class="loading">Loading report...</div>
+      <div *ngIf="error" class="error-message">{{ error }}</div>
+
+      <div *ngIf="report && !loading" class="report-body">
+        <div class="report-meta">
+          <span class="meta-item">Created: {{ report.created_at | date:'medium' }}</span>
+          <span class="meta-item" *ngIf="report.citations">
+            Citations: {{ report.citations.length }}
+          </span>
+        </div>
+
+        <div class="report-text" [innerHTML]="parseContent(report.content)"></div>
+
+        <!-- Citations Section -->
+        <div *ngIf="report.citations && report.citations.length > 0" class="citations-section">
+          <h3>Citations</h3>
+          <div class="citations-list">
+            <div *ngFor="let citation of report.citations; let i = index" class="citation-item">
+              <span class="citation-number">[{{ i + 1 }}]</span>
+              <div class="citation-content">
+                <div class="citation-title" *ngIf="citation.title">{{ citation.title }}</div>
+                <div class="citation-url" *ngIf="citation.url">
+                  <a [href]="citation.url" target="_blank">{{ citation.url }}</a>
+                </div>
+                <div class="citation-snippet" *ngIf="citation.snippet">{{ citation.snippet }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Panel -->
+    <div class="chat-panel" *ngIf="showChat">
+      <div class="chat-header">
+        <h3>Chat about this Report</h3>
+        <p class="chat-subtitle">Ask questions about the report content</p>
+      </div>
+
+      <div class="chat-messages">
+        <div *ngFor="let message of messages" class="message" [ngClass]="'message-' + message.role">
+          <div class="message-header">
+            <span class="message-role">{{ message.role === 'user' ? 'You' : 'Assistant' }}</span>
+            <span class="message-time">{{ message.timestamp | date:'short' }}</span>
+          </div>
+          <div class="message-content">{{ message.content }}</div>
+        </div>
+        <div *ngIf="chatLoading" class="message message-assistant">
+          <div class="message-content">Thinking...</div>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <form (ngSubmit)="sendChatMessage()" class="chat-form">
+          <input
+            type="text"
+            [(ngModel)]="chatInput"
+            name="chatInput"
+            class="chat-input"
+            placeholder="Ask a question about the report..."
+            [disabled]="chatLoading"
+          />
+          <button type="submit" class="btn btn-primary" [disabled]="chatLoading || !chatInput.trim()">
+            Send
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

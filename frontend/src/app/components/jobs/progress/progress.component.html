@@ -1,0 +1,92 @@
+<div class="progress-container">
+  <div class="progress-card">
+    <div class="header">
+      <h2>Job Progress</h2>
+      <a routerLink="/dashboard" class="btn-link">← Back to Dashboard</a>
+    </div>
+
+    <div *ngIf="loading" class="loading">Loading job status...</div>
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+
+    <div *ngIf="job && !loading" class="job-details">
+      <!-- Overall Progress -->
+      <div class="progress-section">
+        <div class="progress-header">
+          <h3>Overall Progress</h3>
+          <span class="job-status" [ngClass]="'status-' + job.status">
+            {{ job.status }}
+          </span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="job.progress"></div>
+          </div>
+          <span class="progress-text">{{ job.progress }}%</span>
+        </div>
+      </div>
+
+      <!-- Job Info -->
+      <div class="info-section">
+        <div class="info-item">
+          <span class="info-label">Job ID:</span>
+          <span class="info-value">#{{ job.id }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Type:</span>
+          <span class="info-value">{{ job.type }}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Created:</span>
+          <span class="info-value">{{ job.created_at | date:'medium' }}</span>
+        </div>
+        <div class="info-item" *ngIf="job.started_at">
+          <span class="info-label">Started:</span>
+          <span class="info-value">{{ job.started_at | date:'medium' }}</span>
+        </div>
+      </div>
+
+      <!-- Tool Status -->
+      <div class="tools-section" *ngIf="job.tasks && job.tasks.length > 0">
+        <h3>Tool Status</h3>
+        <div class="tools-list">
+          <div *ngFor="let task of job.tasks" class="tool-item">
+            <div class="tool-header">
+              <span class="tool-name">{{ task.name || 'Unknown Tool' }}</span>
+              <span class="tool-status" [ngClass]="'status-' + getTaskStatus(task)">
+                {{ getTaskStatus(task) }}
+              </span>
+            </div>
+            <div class="tool-progress" *ngIf="getTaskStatus(task) === 'running'">
+              <div class="progress-bar small">
+                <div class="progress-fill" [style.width.%]="getTaskProgress(task)"></div>
+              </div>
+              <span class="progress-text">{{ getTaskProgress(task) }}%</span>
+            </div>
+            <div class="tool-message" *ngIf="task.message">
+              {{ task.message }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions-section">
+        <button
+          *ngIf="job.status === 'running' || job.status === 'pending'"
+          class="btn btn-danger"
+          (click)="cancelJob()"
+        >
+          Cancel Job
+        </button>
+        <button
+          *ngIf="job.status === 'completed'"
+          class="btn btn-primary"
+          [routerLink]="['/reports', job.id]"
+        >
+          View Report
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

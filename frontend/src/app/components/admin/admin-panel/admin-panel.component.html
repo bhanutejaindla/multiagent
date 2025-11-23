@@ -1,0 +1,103 @@
+<div class="admin-container">
+  <header class="admin-header">
+    <div class="header-content">
+      <h1>Admin Panel</h1>
+      <a routerLink="/dashboard" class="btn-link">← Back to Dashboard</a>
+    </div>
+  </header>
+
+  <div class="admin-content">
+    <div *ngIf="loading" class="loading">Loading admin data...</div>
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+
+    <div *ngIf="!loading && metrics" class="admin-sections">
+      <!-- Metrics Section -->
+      <section class="metrics-section">
+        <h2>System Metrics</h2>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-value">{{ metrics.totalJobs }}</div>
+            <div class="metric-label">Total Jobs</div>
+          </div>
+          <div class="metric-card success">
+            <div class="metric-value">{{ metrics.completedJobs }}</div>
+            <div class="metric-label">Completed</div>
+          </div>
+          <div class="metric-card error">
+            <div class="metric-value">{{ metrics.failedJobs }}</div>
+            <div class="metric-label">Failed</div>
+          </div>
+          <div class="metric-card active">
+            <div class="metric-value">{{ metrics.activeJobs }}</div>
+            <div class="metric-label">Active</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">{{ metrics.errorRate }}%</div>
+            <div class="metric-label">Error Rate</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-value">{{ metrics.averageJobTime }}m</div>
+            <div class="metric-label">Avg Job Time</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tool Registry Section -->
+      <section class="tools-section">
+        <h2>Tool Registry & Quotas</h2>
+        <div class="tools-list">
+          <div *ngFor="let tool of tools" class="tool-card">
+            <div class="tool-header">
+              <div class="tool-info">
+                <h3>{{ tool.name }}</h3>
+                <p class="tool-description">{{ tool.description }}</p>
+              </div>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  [checked]="tool.enabled"
+                  (change)="toggleTool(tool)"
+                />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="tool-quota">
+              <div class="quota-header">
+                <span>Usage: {{ tool.usage }} / {{ tool.quota }}</span>
+                <span class="quota-percentage">{{ getQuotaPercentage(tool) | number:'1.0-0' }}%</span>
+              </div>
+              <div class="quota-bar">
+                <div
+                  class="quota-fill"
+                  [style.width.%]="getQuotaPercentage(tool)"
+                  [style.background-color]="getQuotaColor(tool)"
+                ></div>
+              </div>
+            </div>
+
+            <div class="tool-actions">
+              <div class="quota-input-group">
+                <label for="quota-{{ tool.id }}">Set Quota:</label>
+                <input
+                  type="number"
+                  id="quota-{{ tool.id }}"
+                  [(ngModel)]="tool.quota"
+                  min="0"
+                  class="quota-input"
+                />
+                <button
+                  class="btn btn-sm btn-primary"
+                  (click)="updateToolQuota(tool)"
+                >
+                  Update
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+

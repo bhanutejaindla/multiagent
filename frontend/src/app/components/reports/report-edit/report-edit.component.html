@@ -1,0 +1,43 @@
+<div class="edit-container">
+  <div class="edit-header">
+    <div class="header-content">
+      <div>
+        <h1>Edit Report #{{ reportId }}</h1>
+        <a [routerLink]="['/reports', reportId]" class="btn-link">← Back to Report</a>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" (click)="downloadReport('docx')">Download DOCX</button>
+        <button class="btn btn-secondary" (click)="downloadReport('pdf')">Download PDF</button>
+        <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveReport()" [disabled]="saving">
+          {{ saving ? 'Saving...' : 'Save Changes' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="edit-content">
+    <div *ngIf="loading" class="loading">Loading report...</div>
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+
+    <div *ngIf="report && !loading" class="editor-wrapper">
+      <div class="editor-toolbar">
+        <span class="toolbar-info">Editing report content</span>
+        <span class="toolbar-hint">Changes will be saved as a new version</span>
+      </div>
+
+      <textarea
+        [(ngModel)]="editedContent"
+        class="content-editor"
+        placeholder="Enter report content..."
+      ></textarea>
+
+      <div class="editor-footer">
+        <div class="char-count">
+          {{ editedContent.length }} characters
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

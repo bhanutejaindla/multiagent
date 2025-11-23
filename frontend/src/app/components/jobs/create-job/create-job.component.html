@@ -1,0 +1,148 @@
+<div class="create-job-container">
+  <div class="create-job-card">
+    <div class="header">
+      <h2>Create Research Job</h2>
+      <a routerLink="/dashboard" class="btn-link">← Back to Dashboard</a>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" #jobForm="ngForm">
+      <!-- Topic Input -->
+      <div class="form-group">
+        <label for="topic">Research Topic *</label>
+        <textarea
+          id="topic"
+          name="topic"
+          [(ngModel)]="topic"
+          required
+          minlength="3"
+          class="form-control"
+          rows="4"
+          placeholder="Enter the research topic or question you want to investigate..."
+        ></textarea>
+        <div *ngIf="errors['topic']" class="error-message">
+          {{ errors['topic'] }}
+        </div>
+      </div>
+
+      <!-- Document Upload -->
+      <div class="form-group">
+        <label for="documents">Upload Documents (Optional)</label>
+        <div class="file-upload-area">
+          <input
+            type="file"
+            id="documents"
+            name="documents"
+            (change)="onFileSelected($event)"
+            multiple
+            accept=".pdf,.docx,.txt"
+            class="file-input"
+          />
+          <label for="documents" class="file-label">
+            <span class="upload-icon">📄</span>
+            <span>Click to upload or drag and drop</span>
+            <span class="file-hint">PDF, DOCX, TXT files only</span>
+          </label>
+        </div>
+        <div *ngIf="errors['documents']" class="error-message">
+          {{ errors['documents'] }}
+        </div>
+
+        <!-- Uploaded Files List -->
+        <div *ngIf="documents.length > 0" class="files-list">
+          <div *ngFor="let file of documents; let i = index" class="file-item">
+            <span class="file-name">{{ file.name }}</span>
+            <span class="file-size">{{ formatFileSize(file.size) }}</span>
+            <button
+              type="button"
+              class="btn-remove"
+              (click)="removeDocument(i)"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tool Configuration -->
+      <div class="form-group">
+        <label>Tool Configuration *</label>
+        <div class="tools-config">
+          <label class="tool-item">
+            <input
+              type="checkbox"
+              [(ngModel)]="toolConfig.web_search"
+              name="web_search"
+            />
+            <span class="tool-label">
+              <strong>Web Search</strong>
+              <span class="tool-desc">Search the web for relevant information</span>
+            </span>
+          </label>
+
+          <label class="tool-item">
+            <input
+              type="checkbox"
+              [(ngModel)]="toolConfig.rag"
+              name="rag"
+            />
+            <span class="tool-label">
+              <strong>RAG (Retrieval Augmented Generation)</strong>
+              <span class="tool-desc">Query uploaded documents and knowledge base</span>
+            </span>
+          </label>
+
+          <label class="tool-item">
+            <input
+              type="checkbox"
+              [(ngModel)]="toolConfig.compliance"
+              name="compliance"
+            />
+            <span class="tool-label">
+              <strong>Compliance Check</strong>
+              <span class="tool-desc">Redact PII and ensure compliance</span>
+            </span>
+          </label>
+
+          <label class="tool-item">
+            <input
+              type="checkbox"
+              [(ngModel)]="toolConfig.citation_validation"
+              name="citation_validation"
+            />
+            <span class="tool-label">
+              <strong>Citation Validation</strong>
+              <span class="tool-desc">Verify and validate citations in the report</span>
+            </span>
+          </label>
+        </div>
+        <div *ngIf="errors['tools']" class="error-message">
+          {{ errors['tools'] }}
+        </div>
+      </div>
+
+      <!-- Submit Error -->
+      <div *ngIf="errors['submit']" class="error-message">
+        {{ errors['submit'] }}
+      </div>
+
+      <!-- Submit Button -->
+      <div class="form-actions">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          routerLink="/dashboard"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="loading || !jobForm.valid"
+        >
+          {{ loading ? 'Creating Job...' : 'Create Research Job' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
