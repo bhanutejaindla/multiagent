@@ -48,7 +48,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    loadComponent: () => import('./components/admin/admin-panel/admin-panel.component').then(m => m.AdminPanelComponent),
+    loadComponent: () => import('./components/admin/admin.component').then(m => m.AdminComponent),
     canActivate: [adminGuard]
   },
   {

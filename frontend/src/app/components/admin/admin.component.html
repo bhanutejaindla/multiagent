@@ -1,0 +1,94 @@
+<div class="container mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">Admin Dashboard</h1>
+
+    <div *ngIf="loading" class="text-center py-8">
+        <p class="text-gray-600">Loading admin data...</p>
+    </div>
+
+    <div *ngIf="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+        {{ error }}
+    </div>
+
+    <div *ngIf="!loading && stats">
+        <!-- Stats Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-gray-500 text-sm font-medium">Total Jobs</h3>
+                <p class="text-3xl font-bold text-blue-600">{{ stats.total_jobs }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-gray-500 text-sm font-medium">Active Jobs</h3>
+                <p class="text-3xl font-bold text-green-600">{{ stats.active_jobs }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-gray-500 text-sm font-medium">Completed Jobs</h3>
+                <p class="text-3xl font-bold text-purple-600">{{ stats.completed_jobs }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-gray-500 text-sm font-medium">Total Users</h3>
+                <p class="text-3xl font-bold text-orange-600">{{ stats.total_users }}</p>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="bg-white rounded-lg shadow-md mb-8 overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800">Users</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Username</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Email</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Role</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr *ngFor="let user of users">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.id }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user.username
+                                }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.email }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                                    [ngClass]="{'bg-green-100 text-green-800': user.role === 'ADMIN', 'bg-gray-100 text-gray-800': user.role !== 'ADMIN'}">
+                                    {{ user.role }}
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tools Status -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800">MCP Tools Registry</h2>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div *ngFor="let tool of tools" class="border rounded-lg p-4">
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold text-lg">{{ tool.name }}</h3>
+                            <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-800">{{ tool.status }}</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-2">Functions:</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span *ngFor="let func of tool.functions"
+                                class="bg-gray-100 text-gray-700 px-2 py-1 rounded text-xs">
+                                {{ func }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

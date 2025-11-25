@@ -13,22 +13,23 @@ from mcp_servers.ingestion.server import read_pdf, read_docx
 from contextlib import asynccontextmanager
 from .database import create_db_and_tables, get_session
 from .models import Job, User, JobStatus
-from .kafka_client import consume_events, KafkaProducerClient, TOPIC_NAME
+
 from sqlmodel import Session, select
 from mcp_servers.research.server import web_search
 from mcp_servers.compliance.server import redact_pii
 from mcp_servers.citation_validation.server import verify_citations_internal, parse_web_search_results
 from .rag import add_document, query_documents
 from typing import List, Dict, Any
-from fastapi import Depends, status
+from fastapi import Depends, status, Body
+from langgraph.types import Command
+
+from .logging_config import configure_logging
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    configure_logging()
     create_db_and_tables()
-    # Start Kafka Consumer in background
-    task = asyncio.create_task(consume_events())
     yield
-    task.cancel()
 
 app = FastAPI(title="Research Agent Platform API", lifespan=lifespan)
 
@@ -53,15 +54,16 @@ async def chat_only(request: ChatRequest):
                 session.commit()
                 session.refresh(user)
                 
-            job = Job(type="chat", user_id=user.id, status=JobStatus.running)
+            job = Job(type="chat", user_id=user.id, status=JobStatus.running, name=f"Chat {datetime.utcnow().isoformat()}")
             session.add(job)
             session.commit()
             session.refresh(job)
             
-        # Use Linear Agent Pipeline with direct calls
-        from .agent import run_agent
+        # Use Class-based Agent
+        from .agent import ResearchAgent
+        agent = ResearchAgent()
         # generate_report=False for simple chat
-        result = await run_agent(request.message, job_id=job.id, generate_report=False)
+        result = await agent.run(request.message, thread_id=str(job.id))
         return {
             "response": result["answer"], 
             "job_id": job.id
@@ -79,27 +81,34 @@ async def chat(request: ChatRequest):
             statement = select(User).where(User.name == "demo_user")
             user = session.exec(statement).first()
             if not user:
-                user = User(name="demo_user")
+                user = User(
+                    name="demo_user",
+                    username="demo_user",
+                    email="demo@example.com",
+                    hashed_password="hashed_password_placeholder",
+                    role="USER"
+                )
                 session.add(user)
                 session.commit()
                 session.refresh(user)
                 
-            job = Job(type="chat", user_id=user.id, status=JobStatus.running)
+            job = Job(type="chat", user_id=user.id, status=JobStatus.running, name=f"Chat {datetime.utcnow().isoformat()}")
             session.add(job)
             session.commit()
             session.refresh(job)
             
-        # Use Linear Agent Pipeline with direct calls
-        from .agent import run_agent
-        result = await run_agent(request.message, job_id=job.id, generate_report=True)
+        # Use Class-based Agent
+        from .agent import ResearchAgent
+        agent = ResearchAgent()
+        result = await agent.run(request.message, thread_id=str(job.id))
         return {
             "response": result["answer"], 
             "reports": result["reports"],
             "job_id": job.id
         }
     except Exception as e:
-        # Fallback if LLM/Agent fails
-        return {"response": f"Agent Error: {str(e)}. (Ensure OpenAI Key is set for this demo)"}
+        import traceback
+        return {"response": f"Agent Error: {str(e)}. (Ensure OpenAI Key is set for this demo)\n\nTraceback:\n{traceback.format_exc()}"}
 
 # --- Auth Routes ---
 from fastapi.security import OAuth2PasswordRequestForm
@@ -235,18 +244,7 @@ async def create_job(
     session.commit()
     session.refresh(job)
     
-    # Send initial event
-    producer = KafkaProducerClient()
-    await producer.start()
-    try:
-        event = {
-            "job_id": job.id,
-            "status": "pending",
-            "timestamp": datetime.utcnow().isoformat()
-        }
-        await producer.send_message(TOPIC_NAME, event)
-    finally:
-        await producer.stop()
+
         
     return {"job_id": job.id, "status": job.status}
 
@@ -350,3 +348,10 @@ async def ingest_document(
         session.add(job)
         session.commit()
         raise HTTPException(status_code=500, detail=f"Ingestion failed: {str(e)}")
+
+# --- Include Routers ---
+from .routes.research import router as research_router
+from .routes.admin import router as admin_router
+
+app.include_router(research_router)
+app.include_router(admin_router)

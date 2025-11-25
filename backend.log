@@ -1,206 +1,67 @@
 INFO:     Will watch for changes in these directories: ['/Users/bhanutejaindla/Downloads/multiagent']
 INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     Started reloader process [17899] using WatchFiles
-INFO:     Started server process [17907]
+INFO:     Started reloader process [76096] using WatchFiles
+INFO:     Started server process [76098]
 INFO:     Waiting for application startup.
-2025-11-24 00:58:00,945 INFO sqlalchemy.engine.Engine BEGIN (implicit)
-[11/24/25 00:58:00] INFO     BEGIN          base.py:2702
+2025-11-25 08:08:39,957 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+[11/25/25 08:08:39] INFO     BEGIN          base.py:2702
                              (implicit)                 
-2025-11-24 00:58:00,946 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+2025-11-25 08:08:39,959 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
                     INFO     PRAGMA         base.py:1846
                              main.table_inf             
                              o("users")                 
-2025-11-24 00:58:00,947 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-11-25 08:08:39,959 INFO sqlalchemy.engine.Engine [raw sql] ()
                     INFO     [raw sql] ()   base.py:1846
-2025-11-24 00:58:00,947 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("agents")
+2025-11-25 08:08:39,960 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("agents")
                     INFO     PRAGMA         base.py:1846
                              main.table_inf             
                              o("agents")                
-2025-11-24 00:58:00,948 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-11-25 08:08:39,960 INFO sqlalchemy.engine.Engine [raw sql] ()
                     INFO     [raw sql] ()   base.py:1846
-2025-11-24 00:58:00,948 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("jobs")
+2025-11-25 08:08:39,961 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("jobs")
                     INFO     PRAGMA         base.py:1846
                              main.table_inf             
                              o("jobs")                  
-2025-11-24 00:58:00,948 INFO sqlalchemy.engine.Engine [raw sql] ()
+2025-11-25 08:08:39,961 INFO sqlalchemy.engine.Engine [raw sql] ()
                     INFO     [raw sql] ()   base.py:1846
-2025-11-24 00:58:00,949 INFO sqlalchemy.engine.Engine COMMIT
+2025-11-25 08:08:39,962 INFO sqlalchemy.engine.Engine COMMIT
                     INFO     COMMIT         base.py:2708
-                    INFO     U subscription_state.py:110
-                             p                          
-                             d                          
-                             a                          
-                             t                          
-                             i                          
-                             n                          
-                             g                          
-                                                        
-                             s                          
-                             u                          
-                             b                          
-                             s                          
-                             c                          
-                             r                          
-                             i                          
-                             b                          
-                             e                          
-                             d                          
-                                                        
-                             t                          
-                             o                          
-                             p                          
-                             i                          
-                             c                          
-                             s                          
-                                                        
-                             t                          
-                             o                          
-                             :                          
-                                                        
-                             f                          
-                             r                          
-                             o                          
-                             z                          
-                             e                          
-                             n                          
-                             s                          
-                             e                          
-                             t                          
-                             (                          
-                             {                          
-                             '                          
-                             a                          
-                             g                          
-                             e                          
-                             n                          
-                             t                          
-                             .                          
-                             j                          
-                             o                          
-                             b                          
-                             .                          
-                             e                          
-                             v                          
-                             e                          
-                             n                          
-                             t                          
-                             s                          
-                             '                          
-                             }                          
-                             )                          
 INFO:     Application startup complete.
-                    INFO     Di group_coordinator.py:594
-                             sc                         
-                             ov                         
-                             er                         
-                             ed                         
-                                                        
-                             co                         
-                             or                         
-                             di                         
-                             na                         
-                             to                         
-                             r                          
-                             1                          
-                             fo                         
-                             r                          
-                             gr                         
-                             ou                         
-                             p                          
-                             ag                         
-                             en                         
-                             t-                         
-                             co                         
-                             ns                         
-                             um                         
-                             er                         
-                             -g                         
-                             ro                         
-                             up                         
-                    INFO     Re group_coordinator.py:415
-                             vo                         
-                             ki                         
-                             ng                         
-                                                        
-                             pr                         
-                             ev                         
-                             io                         
-                             us                         
-                             ly                         
-                                                        
-                             as                         
-                             si                         
-                             gn                         
-                             ed                         
-                                                        
-                             pa                         
-                             rt                         
-                             it                         
-                             io                         
-                             ns                         
-                                                        
-                             se                         
-                             t(                         
-                             )                          
-                             fo                         
-                             r                          
-                             gr                         
-                             ou                         
-                             p                          
-                             ag                         
-                             en                         
-                             t-                         
-                             co                         
-                             ns                         
-                             um                         
-                             er                         
-                             -g                         
-                             ro                         
-                             up                         
-                    INFO     ( group_coordinator.py:1281
-                             R                          
-                             e                          
-                             -                          
-                             )                          
-                             j                          
-                             o                          
-                             i                          
-                             n                          
-                             i                          
-                             n                          
-                             g                          
-                                                        
-                             g                          
-                             r                          
-                             o                          
-                             u                          
-                             p                          
-                                                        
-                             a                          
-                             g                          
-                             e                          
-                             n                          
-                             t                          
-                             -                          
-                             c                          
-                             o                          
-                             n                          
-                             s                          
-                             u                          
-                             m                          
-                             e                          
-                             r                          
-                             -                          
-                             g                          
-                             r                          
-                             o                          
-                             u                          
-                             p                          
-DEBUG: Signup request for ingest@example.com, role: USER
-2025-11-24 00:58:03,140 INFO sqlalchemy.engine.Engine BEGIN (implicit)
-[11/24/25 00:58:03] INFO     BEGIN          base.py:2702
+WARNING:  WatchFiles detected changes in 'test_admin.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [76098]
+INFO:     Started server process [76105]
+INFO:     Waiting for application startup.
+2025-11-25 08:08:44,945 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+[11/25/25 08:08:44] INFO     BEGIN          base.py:2702
                              (implicit)                 
-2025-11-24 00:58:03,171 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
+2025-11-25 08:08:44,947 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("users")
+                    INFO     PRAGMA         base.py:1846
+                             main.table_inf             
+                             o("users")                 
+2025-11-25 08:08:44,947 INFO sqlalchemy.engine.Engine [raw sql] ()
+                    INFO     [raw sql] ()   base.py:1846
+2025-11-25 08:08:44,948 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("agents")
+                    INFO     PRAGMA         base.py:1846
+                             main.table_inf             
+                             o("agents")                
+2025-11-25 08:08:44,949 INFO sqlalchemy.engine.Engine [raw sql] ()
+                    INFO     [raw sql] ()   base.py:1846
+2025-11-25 08:08:44,949 INFO sqlalchemy.engine.Engine PRAGMA main.table_info("jobs")
+                    INFO     PRAGMA         base.py:1846
+                             main.table_inf             
+                             o("jobs")                  
+2025-11-25 08:08:44,950 INFO sqlalchemy.engine.Engine [raw sql] ()
+                    INFO     [raw sql] ()   base.py:1846
+2025-11-25 08:08:44,950 INFO sqlalchemy.engine.Engine COMMIT
+                    INFO     COMMIT         base.py:2708
+INFO:     Application startup complete.
+2025-11-25 08:08:51,971 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+[11/25/25 08:08:51] INFO     BEGIN          base.py:2702
+                             (implicit)                 
+2025-11-25 08:08:51,975 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
 FROM users 
 WHERE users.email = ?
                     INFO     SELECT         base.py:1846
@@ -216,109 +77,89 @@ WHERE users.email = ?
                              WHERE                      
                              users.email =              
                              ?                          
-2025-11-24 00:58:03,172 INFO sqlalchemy.engine.Engine [generated in 0.00104s] ('ingest@example.com',)
+2025-11-25 08:08:51,976 INFO sqlalchemy.engine.Engine [generated in 0.00080s] ('admin@test.com',)
                     INFO     [generated in  base.py:1846
-                             0.00104s]                  
-                             ('ingest@examp             
-                             le.com',)                  
-2025-11-24 00:58:03,175 INFO sqlalchemy.engine.Engine ROLLBACK
-                    INFO     ROLLBACK       base.py:2705
-INFO:     127.0.0.1:52493 - "POST /auth/signup HTTP/1.1" 500 Internal Server Error
-ERROR:    Exception in ASGI application
-Traceback (most recent call last):
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
-    return self._object_lookup[elem]  # type: ignore[return-value]
-           ~~~~~~~~~~~~~~~~~~~^^^^^^
-KeyError: 'user'
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
-    result = await app(  # type: ignore[func-returns-value]
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        self.scope, self.receive, self.send
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
-    return await self.app(scope, receive, send)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/fastapi/applications.py", line 1133, in __call__
-    await super().__call__(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/applications.py", line 113, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
-    raise exc
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
-    await self.app(scope, receive, _send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
-    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
-    raise exc
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
-    await app(scope, receive, sender)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
-    await self.app(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
-    await route.handle(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
-    await self.app(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/fastapi/routing.py", line 123, in app
-    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
-    raise exc
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
-    await app(scope, receive, sender)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
-    response = await f(request)
-               ^^^^^^^^^^^^^^^^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/fastapi/routing.py", line 389, in app
-    raw_response = await run_endpoint_function(
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<3 lines>...
-    )
-    ^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/fastapi/routing.py", line 288, in run_endpoint_function
-    return await dependant.call(**values)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/bhanutejaindla/Downloads/multiagent/backend/main.py", line 131, in signup
-    existing_user = session.exec(statement).first()
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/engine/result.py", line 1791, in first
-    return self._only_one_row(
-           ~~~~~~~~~~~~~~~~~~^
-        raise_for_second_row=False, raise_for_none=False, scalar=False
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
-    row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
-                                          ~~~~~~^^^^^^^^^^^^^^^^^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
-    return self._real_result._fetchone_impl(hard_close=hard_close)
-           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
-    row = next(self.iterator, _NO_ROW)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/orm/loading.py", line 220, in chunks
-    fetch = cursor._raw_all_rows()
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
-    return [make_row(row) for row in rows]
-            ~~~~~~~~^^^^^
-  File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
-  File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
-    value = self._object_value_for_elem(value)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
-    raise LookupError(
-    ...<7 lines>...
-    ) from err
-LookupError: 'user' is not among the defined enum values. Enum name: userrole. Possible values: USER, ADMIN
-2025-11-24 00:58:03,200 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+                             0.00080s]                  
+                             ('admin@test.c             
+                             om',)                      
+2025-11-25 08:08:51,977 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
+FROM users 
+WHERE users.username = ?
+                    INFO     SELECT         base.py:1846
+                             users.id,                  
+                             users.username             
+                             , users.email,             
+                             users.hashed_p             
+                             assword,                   
+                             users.role,                
+                             users.full_nam             
+                             e, users.name              
+                             FROM users                 
+                             WHERE                      
+                             users.username             
+                             = ?                        
+2025-11-25 08:08:51,977 INFO sqlalchemy.engine.Engine [generated in 0.00064s] ('admin_test',)
+                    INFO     [generated in  base.py:1846
+                             0.00064s]                  
+                             ('admin_test',             
+                             )                          
+2025-11-25 08:08:52,036 INFO sqlalchemy.engine.Engine INSERT INTO users (username, email, hashed_password, role, full_name, name) VALUES (?, ?, ?, ?, ?, ?)
+[11/25/25 08:08:52] INFO     INSERT INTO    base.py:1846
+                             users                      
+                             (username,                 
+                             email,                     
+                             hashed_passwor             
+                             d, role,                   
+                             full_name,                 
+                             name) VALUES               
+                             (?, ?, ?, ?,               
+                             ?, ?)                      
+2025-11-25 08:08:52,037 INFO sqlalchemy.engine.Engine [generated in 0.00110s] ('admin_test', 'admin@test.com', '$argon2id$v=19$m=65536,t=3,p=4$+L+31npPifGeEwLg/P+fUw$Foi+wsL+ZlIW0Ayhlf1lfSeA/KlwIT4UNJP2ap83wmM', 'ADMIN', None, 'admin_test')
+                    INFO     [generated in  base.py:1846
+                             0.00110s]                  
+                             ('admin_test',             
+                             'admin@test.co             
+                             m',                        
+                             '$argon2id$v=1             
+                             9$m=65536,t=3,             
+                             p=4$+L+31npPif             
+                             GeEwLg/P+fUw$F             
+                             oi+wsL+ZlIW0Ay             
+                             hlf1lfSeA/KlwI             
+                             T4UNJP2ap83wmM             
+                             ', 'ADMIN',                
+                             None,                      
+                             'admin_test')              
+2025-11-25 08:08:52,039 INFO sqlalchemy.engine.Engine COMMIT
+                    INFO     COMMIT         base.py:2708
+2025-11-25 08:08:52,040 INFO sqlalchemy.engine.Engine BEGIN (implicit)
                     INFO     BEGIN          base.py:2702
                              (implicit)                 
-2025-11-24 00:58:03,201 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
+2025-11-25 08:08:52,045 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
+FROM users 
+WHERE users.id = ?
+                    INFO     SELECT         base.py:1846
+                             users.id,                  
+                             users.username             
+                             , users.email,             
+                             users.hashed_p             
+                             assword,                   
+                             users.role,                
+                             users.full_nam             
+                             e, users.name              
+                             FROM users                 
+                             WHERE users.id             
+                             = ?                        
+2025-11-25 08:08:52,046 INFO sqlalchemy.engine.Engine [generated in 0.00078s] (3,)
+                    INFO     [generated in  base.py:1846
+                             0.00078s] (3,)             
+INFO:     127.0.0.1:63236 - "POST /auth/signup HTTP/1.1" 200 OK
+2025-11-25 08:08:52,057 INFO sqlalchemy.engine.Engine ROLLBACK
+                    INFO     ROLLBACK       base.py:2705
+2025-11-25 08:08:52,060 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+                    INFO     BEGIN          base.py:2702
+                             (implicit)                 
+2025-11-25 08:08:52,060 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
 FROM users 
 WHERE users.email = ?
                     INFO     SELECT         base.py:1846
@@ -334,420 +175,267 @@ WHERE users.email = ?
                              WHERE                      
                              users.email =              
                              ?                          
-2025-11-24 00:58:03,202 INFO sqlalchemy.engine.Engine [cached since 0.0312s ago] ('ingest@example.com',)
+2025-11-25 08:08:52,061 INFO sqlalchemy.engine.Engine [cached since 0.0857s ago] ('admin@test.com',)
                     INFO     [cached since  base.py:1846
-                             0.0312s ago]               
-                             ('ingest@examp             
-                             le.com',)                  
-2025-11-24 00:58:03,203 INFO sqlalchemy.engine.Engine ROLLBACK
+                             0.0857s ago]               
+                             ('admin@test.c             
+                             om',)                      
+2025-11-25 08:08:52,062 INFO sqlalchemy.engine.Engine SELECT count(jobs.id) AS count_1 
+FROM jobs
+                    INFO     SELECT         base.py:1846
+                             count(jobs.id)             
+                             AS count_1                 
+                             FROM jobs                  
+2025-11-25 08:08:52,062 INFO sqlalchemy.engine.Engine [generated in 0.00051s] ()
+                    INFO     [generated in  base.py:1846
+                             0.00051s] ()               
+2025-11-25 08:08:52,063 INFO sqlalchemy.engine.Engine SELECT count(jobs.id) AS count_1 
+FROM jobs 
+WHERE jobs.status = ?
+                    INFO     SELECT         base.py:1846
+                             count(jobs.id)             
+                             AS count_1                 
+                             FROM jobs                  
+                             WHERE                      
+                             jobs.status =              
+                             ?                          
+2025-11-25 08:08:52,064 INFO sqlalchemy.engine.Engine [generated in 0.00049s] ('running',)
+                    INFO     [generated in  base.py:1846
+                             0.00049s]                  
+                             ('running',)               
+2025-11-25 08:08:52,064 INFO sqlalchemy.engine.Engine SELECT count(jobs.id) AS count_1 
+FROM jobs 
+WHERE jobs.status = ?
+                    INFO     SELECT         base.py:1846
+                             count(jobs.id)             
+                             AS count_1                 
+                             FROM jobs                  
+                             WHERE                      
+                             jobs.status =              
+                             ?                          
+2025-11-25 08:08:52,065 INFO sqlalchemy.engine.Engine [cached since 0.001683s ago] ('completed',)
+                    INFO     [cached since  base.py:1846
+                             0.001683s ago]             
+                             ('completed',)             
+2025-11-25 08:08:52,065 INFO sqlalchemy.engine.Engine SELECT count(jobs.id) AS count_1 
+FROM jobs 
+WHERE jobs.status = ?
+                    INFO     SELECT         base.py:1846
+                             count(jobs.id)             
+                             AS count_1                 
+                             FROM jobs                  
+                             WHERE                      
+                             jobs.status =              
+                             ?                          
+2025-11-25 08:08:52,066 INFO sqlalchemy.engine.Engine [cached since 0.002735s ago] ('failed',)
+                    INFO     [cached since  base.py:1846
+                             0.002735s ago]             
+                             ('failed',)                
+2025-11-25 08:08:52,066 INFO sqlalchemy.engine.Engine SELECT count(users.id) AS count_1 
+FROM users
+                    INFO     SELECT         base.py:1846
+                             count(users.id             
+                             ) AS count_1               
+                             FROM users                 
+2025-11-25 08:08:52,067 INFO sqlalchemy.engine.Engine [generated in 0.00042s] ()
+                    INFO     [generated in  base.py:1846
+                             0.00042s] ()               
+INFO:     127.0.0.1:63238 - "GET /admin/stats HTTP/1.1" 200 OK
+2025-11-25 08:08:52,067 INFO sqlalchemy.engine.Engine ROLLBACK
                     INFO     ROLLBACK       base.py:2705
-INFO:     127.0.0.1:52495 - "POST /auth/login HTTP/1.1" 500 Internal Server Error
-ERROR:    Exception in ASGI application
-Traceback (most recent call last):
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/sql/sqltypes.py", line 1709, in _object_value_for_elem
-    return self._object_lookup[elem]  # type: ignore[return-value]
-           ~~~~~~~~~~~~~~~~~~~^^^^^^
-KeyError: 'user'
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/uvicorn/protocols/http/httptools_impl.py", line 409, in run_asgi
-    result = await app(  # type: ignore[func-returns-value]
-             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        self.scope, self.receive, self.send
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
-    return await self.app(scope, receive, send)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/fastapi/applications.py", line 1133, in __call__
-    await super().__call__(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/applications.py", line 113, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/middleware/errors.py", line 186, in __call__
-    raise exc
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/middleware/errors.py", line 164, in __call__
-    await self.app(scope, receive, _send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
-    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
-    raise exc
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
-    await app(scope, receive, sender)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
-    await self.app(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/routing.py", line 716, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/routing.py", line 736, in app
-    await route.handle(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/routing.py", line 290, in handle
-    await self.app(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/fastapi/routing.py", line 123, in app
-    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
-    raise exc
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
-    await app(scope, receive, sender)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/fastapi/routing.py", line 109, in app
-    response = await f(request)
-               ^^^^^^^^^^^^^^^^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/fastapi/routing.py", line 389, in app
-    raw_response = await run_endpoint_function(
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<3 lines>...
-    )
-    ^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/fastapi/routing.py", line 288, in run_endpoint_function
-    return await dependant.call(**values)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/bhanutejaindla/Downloads/multiagent/backend/main.py", line 166, in login
-    user = session.exec(statement).first()
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/engine/result.py", line 1791, in first
-    return self._only_one_row(
-           ~~~~~~~~~~~~~~~~~~^
-        raise_for_second_row=False, raise_for_none=False, scalar=False
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/engine/result.py", line 757, in _only_one_row
-    row: Optional[_InterimRowType[Any]] = onerow(hard_close=True)
-                                          ~~~~~~^^^^^^^^^^^^^^^^^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/engine/result.py", line 1678, in _fetchone_impl
-    return self._real_result._fetchone_impl(hard_close=hard_close)
-           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/engine/result.py", line 2264, in _fetchone_impl
-    row = next(self.iterator, _NO_ROW)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/orm/loading.py", line 220, in chunks
-    fetch = cursor._raw_all_rows()
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/engine/result.py", line 541, in _raw_all_rows
-    return [make_row(row) for row in rows]
-            ~~~~~~~~^^^^^
-  File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 22, in sqlalchemy.cyextension.resultproxy.BaseRow.__init__
-  File "lib/sqlalchemy/cyextension/resultproxy.pyx", line 79, in sqlalchemy.cyextension.resultproxy._apply_processors
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/sql/sqltypes.py", line 1829, in process
-    value = self._object_value_for_elem(value)
-  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/sqlalchemy/sql/sqltypes.py", line 1711, in _object_value_for_elem
-    raise LookupError(
-    ...<7 lines>...
-    ) from err
-LookupError: 'user' is not among the defined enum values. Enum name: userrole. Possible values: USER, ADMIN
-[11/24/25 00:58:06] INFO     J group_coordinator.py:1360
-                             o                          
-                             i                          
-                             n                          
-                             e                          
-                             d                          
-                                                        
-                             g                          
-                             r                          
-                             o                          
-                             u                          
-                             p                          
-                                                        
-                             '                          
-                             a                          
-                             g                          
-                             e                          
-                             n                          
-                             t                          
-                             -                          
-                             c                          
-                             o                          
-                             n                          
-                             s                          
-                             u                          
-                             m                          
-                             e                          
-                             r                          
-                             -                          
-                             g                          
-                             r                          
-                             o                          
-                             u                          
-                             p                          
-                             '                          
-                                                        
-                             (                          
-                             g                          
-                             e                          
-                             n                          
-                             e                          
-                             r                          
-                             a                          
-                             t                          
-                             i                          
-                             o                          
-                             n                          
-                                                        
-                             2                          
-                             5                          
-                             )                          
-                                                        
-                             w                          
-                             i                          
-                             t                          
-                             h                          
-                                                        
-                             m                          
-                             e                          
-                             m                          
-                             b                          
-                             e                          
-                             r                          
-                             _                          
-                             i                          
-                             d                          
-                                                        
-                             a                          
-                             i                          
-                             o                          
-                             k                          
-                             a                          
-                             f                          
-                             k                          
-                             a                          
-                             -                          
-                             0                          
-                             .                          
-                             1                          
-                             2                          
-                             .                          
-                             0                          
-                             -                          
-                             e                          
-                             1                          
-                             a                          
-                             9                          
-                             7                          
-                             3                          
-                             8                          
-                             9                          
-                             -                          
-                             b                          
-                             9                          
-                             2                          
-                             c                          
-                             -                          
-                             4                          
-                             8                          
-                             1                          
-                             4                          
-                             -                          
-                             8                          
-                             7                          
-                             5                          
-                             7                          
-                             -                          
-                             0                          
-                             4                          
-                             c                          
-                             e                          
-                             a                          
-                             7                          
-                             d                          
-                             e                          
-                             0                          
-                             f                          
-                             c                          
-                             3                          
-                    INFO     E group_coordinator.py:1368
-                             l                          
-                             e                          
-                             c                          
-                             t                          
-                             e                          
-                             d                          
-                                                        
-                             g                          
-                             r                          
-                             o                          
-                             u                          
-                             p                          
-                                                        
-                             l                          
-                             e                          
-                             a                          
-                             d                          
-                             e                          
-                             r                          
-                                                        
-                             -                          
-                             -                          
-                                                        
-                             p                          
-                             e                          
-                             r                          
-                             f                          
-                             o                          
-                             r                          
-                             m                          
-                             i                          
-                             n                          
-                             g                          
-                                                        
-                             p                          
-                             a                          
-                             r                          
-                             t                          
-                             i                          
-                             t                          
-                             i                          
-                             o                          
-                             n                          
-                                                        
-                             a                          
-                             s                          
-                             s                          
-                             i                          
-                             g                          
-                             n                          
-                             m                          
-                             e                          
-                             n                          
-                             t                          
-                             s                          
-                                                        
-                             u                          
-                             s                          
-                             i                          
-                             n                          
-                             g                          
-                                                        
-                             r                          
-                             o                          
-                             u                          
-                             n                          
-                             d                          
-                             r                          
-                             o                          
-                             b                          
-                             i                          
-                             n                          
-                    INFO     S group_coordinator.py:1519
-                             u                          
-                             c                          
-                             c                          
-                             e                          
-                             s                          
-                             s                          
-                             f                          
-                             u                          
-                             l                          
-                             l                          
-                             y                          
-                                                        
-                             s                          
-                             y                          
-                             n                          
-                             c                          
-                             e                          
-                             d                          
-                                                        
-                             g                          
-                             r                          
-                             o                          
-                             u                          
-                             p                          
-                                                        
-                             a                          
-                             g                          
-                             e                          
-                             n                          
-                             t                          
-                             -                          
-                             c                          
-                             o                          
-                             n                          
-                             s                          
-                             u                          
-                             m                          
-                             e                          
-                             r                          
-                             -                          
-                             g                          
-                             r                          
-                             o                          
-                             u                          
-                             p                          
-                                                        
-                             w                          
-                             i                          
-                             t                          
-                             h                          
-                                                        
-                             g                          
-                             e                          
-                             n                          
-                             e                          
-                             r                          
-                             a                          
-                             t                          
-                             i                          
-                             o                          
-                             n                          
-                                                        
-                             2                          
-                             5                          
-                    INFO     Se group_coordinator.py:506
-                             tt                         
-                             in                         
-                             g                          
-                             ne                         
-                             wl                         
-                             y                          
-                             as                         
-                             si                         
-                             gn                         
-                             ed                         
-                                                        
-                             pa                         
-                             rt                         
-                             it                         
-                             io                         
-                             ns                         
-                                                        
-                             {T                         
-                             op                         
-                             ic                         
-                             Pa                         
-                             rt                         
-                             it                         
-                             io                         
-                             n(                         
-                             to                         
-                             pi                         
-                             c=                         
-                             'a                         
-                             ge                         
-                             nt                         
-                             .j                         
-                             ob                         
-                             .e                         
-                             ve                         
-                             nt                         
-                             s'                         
+2025-11-25 08:08:52,069 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+                    INFO     BEGIN          base.py:2702
+                             (implicit)                 
+2025-11-25 08:08:52,069 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
+FROM users 
+WHERE users.email = ?
+                    INFO     SELECT         base.py:1846
+                             users.id,                  
+                             users.username             
+                             , users.email,             
+                             users.hashed_p             
+                             assword,                   
+                             users.role,                
+                             users.full_nam             
+                             e, users.name              
+                             FROM users                 
+                             WHERE                      
+                             users.email =              
+                             ?                          
+2025-11-25 08:08:52,070 INFO sqlalchemy.engine.Engine [cached since 0.09491s ago] ('admin@test.com',)
+                    INFO     [cached since  base.py:1846
+                             0.09491s ago]              
+                             ('admin@test.c             
+                             om',)                      
+2025-11-25 08:08:52,070 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
+FROM users
+                    INFO     SELECT         base.py:1846
+                             users.id,                  
+                             users.username             
+                             , users.email,             
+                             users.hashed_p             
+                             assword,                   
+                             users.role,                
+                             users.full_nam             
+                             e, users.name              
+                             FROM users                 
+2025-11-25 08:08:52,071 INFO sqlalchemy.engine.Engine [generated in 0.00050s] ()
+                    INFO     [generated in  base.py:1846
+                             0.00050s] ()               
+INFO:     127.0.0.1:63240 - "GET /admin/users HTTP/1.1" 200 OK
+2025-11-25 08:08:52,072 INFO sqlalchemy.engine.Engine ROLLBACK
+                    INFO     ROLLBACK       base.py:2705
+2025-11-25 08:08:52,073 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+                    INFO     BEGIN          base.py:2702
+                             (implicit)                 
+2025-11-25 08:08:52,073 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
+FROM users 
+WHERE users.email = ?
+                    INFO     SELECT         base.py:1846
+                             users.id,                  
+                             users.username             
+                             , users.email,             
+                             users.hashed_p             
+                             assword,                   
+                             users.role,                
+                             users.full_nam             
+                             e, users.name              
+                             FROM users                 
+                             WHERE                      
+                             users.email =              
+                             ?                          
+2025-11-25 08:08:52,074 INFO sqlalchemy.engine.Engine [cached since 0.09889s ago] ('admin@test.com',)
+                    INFO     [cached since  base.py:1846
+                             0.09889s ago]              
+                             ('admin@test.c             
+                             om',)                      
+INFO:     127.0.0.1:63242 - "GET /admin/tools HTTP/1.1" 200 OK
+2025-11-25 08:08:52,074 INFO sqlalchemy.engine.Engine ROLLBACK
+                    INFO     ROLLBACK       base.py:2705
+2025-11-25 08:08:52,076 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+                    INFO     BEGIN          base.py:2702
+                             (implicit)                 
+2025-11-25 08:08:52,076 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
+FROM users 
+WHERE users.email = ?
+                    INFO     SELECT         base.py:1846
+                             users.id,                  
+                             users.username             
+                             , users.email,             
+                             users.hashed_p             
+                             assword,                   
+                             users.role,                
+                             users.full_nam             
+                             e, users.name              
+                             FROM users                 
+                             WHERE                      
+                             users.email =              
+                             ?                          
+2025-11-25 08:08:52,076 INFO sqlalchemy.engine.Engine [cached since 0.1016s ago] ('normal@test.com',)
+                    INFO     [cached since  base.py:1846
+                             0.1016s ago]               
+                             ('normal@test.             
+                             com',)                     
+2025-11-25 08:08:52,077 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
+FROM users 
+WHERE users.username = ?
+                    INFO     SELECT         base.py:1846
+                             users.id,                  
+                             users.username             
+                             , users.email,             
+                             users.hashed_p             
+                             assword,                   
+                             users.role,                
+                             users.full_nam             
+                             e, users.name              
+                             FROM users                 
+                             WHERE                      
+                             users.username             
+                             = ?                        
+2025-11-25 08:08:52,078 INFO sqlalchemy.engine.Engine [cached since 0.101s ago] ('normal_user',)
+                    INFO     [cached since  base.py:1846
+                             0.101s ago]                
+                             ('normal_user'             
+                             ,)                         
+2025-11-25 08:08:52,132 INFO sqlalchemy.engine.Engine INSERT INTO users (username, email, hashed_password, role, full_name, name) VALUES (?, ?, ?, ?, ?, ?)
+                    INFO     INSERT INTO    base.py:1846
+                             users                      
+                             (username,                 
+                             email,                     
+                             hashed_passwor             
+                             d, role,                   
+                             full_name,                 
+                             name) VALUES               
+                             (?, ?, ?, ?,               
+                             ?, ?)                      
+2025-11-25 08:08:52,132 INFO sqlalchemy.engine.Engine [cached since 0.09639s ago] ('normal_user', 'normal@test.com', '$argon2id$v=19$m=65536,t=3,p=4$CsH4H8OY07p37l1LiZHSWg$9pgcR0zPoSOWSfgT7MtkTs2G1zyLUb3suA2/YiDomDs', 'USER', None, 'normal_user')
+                    INFO     [cached since  base.py:1846
+                             0.09639s ago]              
+                             ('normal_user'             
                              ,                          
-                             pa                         
-                             rt                         
-                             it                         
-                             io                         
-                             n=                         
-                             0)                         
-                             }                          
-                             fo                         
-                             r                          
-                             gr                         
-                             ou                         
-                             p                          
-                             ag                         
-                             en                         
-                             t-                         
-                             co                         
-                             ns                         
-                             um                         
-                             er                         
-                             -g                         
-                             ro                         
-                             up                         
+                             'normal@test.c             
+                             om',                       
+                             '$argon2id$v=1             
+                             9$m=65536,t=3,             
+                             p=4$CsH4H8OY07             
+                             p37l1LiZHSWg$9             
+                             pgcR0zPoSOWSfg             
+                             T7MtkTs2G1zyLU             
+                             b3suA2/YiDomDs             
+                             ', 'USER',                 
+                             None,                      
+                             'normal_user')             
+2025-11-25 08:08:52,134 INFO sqlalchemy.engine.Engine COMMIT
+                    INFO     COMMIT         base.py:2708
+2025-11-25 08:08:52,135 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+                    INFO     BEGIN          base.py:2702
+                             (implicit)                 
+2025-11-25 08:08:52,136 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
+FROM users 
+WHERE users.id = ?
+                    INFO     SELECT         base.py:1846
+                             users.id,                  
+                             users.username             
+                             , users.email,             
+                             users.hashed_p             
+                             assword,                   
+                             users.role,                
+                             users.full_nam             
+                             e, users.name              
+                             FROM users                 
+                             WHERE users.id             
+                             = ?                        
+2025-11-25 08:08:52,136 INFO sqlalchemy.engine.Engine [cached since 0.09086s ago] (4,)
+                    INFO     [cached since  base.py:1846
+                             0.09086s ago]              
+                             (4,)                       
+INFO:     127.0.0.1:63244 - "POST /auth/signup HTTP/1.1" 200 OK
+2025-11-25 08:08:52,137 INFO sqlalchemy.engine.Engine ROLLBACK
+                    INFO     ROLLBACK       base.py:2705
+2025-11-25 08:08:52,139 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+                    INFO     BEGIN          base.py:2702
+                             (implicit)                 
+2025-11-25 08:08:52,140 INFO sqlalchemy.engine.Engine SELECT users.id, users.username, users.email, users.hashed_password, users.role, users.full_name, users.name 
+FROM users 
+WHERE users.email = ?
+                    INFO     SELECT         base.py:1846
+                             users.id,                  
+                             users.username             
+                             , users.email,             
+                             users.hashed_p             
+                             assword,                   
+                             users.role,                
+                             users.full_nam             
+                             e, users.name              
+                             FROM users                 
+                             WHERE                      
+                             users.email =              
+                             ?                          
+2025-11-25 08:08:52,140 INFO sqlalchemy.engine.Engine [cached since 0.1653s ago] ('normal@test.com',)
+                    INFO     [cached since  base.py:1846
+                             0.1653s ago]               
+                             ('normal@test.             
+                             com',)                     
+2025-11-25 08:08:52,141 INFO sqlalchemy.engine.Engine ROLLBACK
+                    INFO     ROLLBACK       base.py:2705
+INFO:     127.0.0.1:63246 - "GET /admin/stats HTTP/1.1" 403 Forbidden

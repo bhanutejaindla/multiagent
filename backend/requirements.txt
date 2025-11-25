@@ -13,10 +13,12 @@ psycopg
 langchain-openai
 sentence-transformers
 langchain-text-splitters
-aiokafka
+
 sqlmodel
 asyncpg
 reportlab
 python-jose[cryptography]
 passlib[argon2]
 python-multipart
+structlog
+langfuse

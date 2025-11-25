@@ -1,0 +1,340 @@
+from typing import TypedDict, Annotated, List, Dict, Any, Optional, Sequence
+from langgraph.graph import StateGraph, END
+from langgraph.types import interrupt, Command
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+import operator
+from langchain_openai import ChatOpenAI
+from langgraph.checkpoint.memory import MemorySaver
+import os
+from dotenv import load_dotenv
+import asyncio
+
+# Import tools/functions from existing modules
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from datetime import datetime
+from datetime import datetime
+from .agents.ingestion_agent import IngestionRetrievalAgent
+from .agents.web_research_agent import WebResearchAgent
+from .agents.synthesis_agent import SynthesisReportAgent
+from .agents.citation_agent import CitationAgent
+from .agents.compliance_agent import ComplianceAgent
+
+
+
+load_dotenv()
+
+# --- State Definition ---
+
+class AgentState(TypedDict):
+    messages: Annotated[Sequence[BaseMessage], operator.add]
+    next_step: str
+    job_id: Optional[int]
+    artifacts: Dict[str, Any]
+    research_data: Dict[str, Any] # Store research results
+    final_report: Dict[str, str] # Store paths to generated reports
+
+# --- Nodes ---
+
+from pydantic import BaseModel
+from typing import Literal
+
+class Router(BaseModel):
+    """Worker to route to next. If no workers needed, route to FINISH."""
+    next: Literal["research", "synthesis", "citation", "compliance", "report", "FINISH"]
+
+async def supervisor_node(state: AgentState):
+    """
+    Supervisor node that routes to the next worker based on the conversation state.
+    """
+    messages = state["messages"]
+    next_step = state.get("next_step", "start")
+    
+    # If we just started, default to research
+    if next_step == "start":
+        return {"next_step": "research"}
+        
+    # If we just finished report, we are done
+    if next_step == "report":
+        return {"next_step": "end"}
+
+    # For other steps, use LLM to decide (or keep simple linear flow if preferred, 
+    # but user asked for LLM decision. However, strictly linear dependencies 
+    # (Research -> Synthesis -> Compliance -> Report) are often better enforced 
+    # by the graph structure itself for this specific pipeline. 
+    # But to satisfy "LLM should decide", we can give it the option.)
+    
+    # Actually, for this specific "Research Agent", the flow is quite linear.
+    # But let's implement the Router pattern to allow for loops (e.g. Synthesis -> Research -> Synthesis).
+    
+    # Check for API key
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        print("WARNING: OPENAI_API_KEY not found. Using deterministic routing.")
+        # Linear fallback: research -> synthesis -> citation -> compliance -> report -> end
+        if next_step == "research":
+            return {"next_step": "synthesis"}
+        elif next_step == "synthesis":
+            return {"next_step": "citation"}
+        elif next_step == "citation":
+            return {"next_step": "compliance"}
+        elif next_step == "compliance":
+            return {"next_step": "report"}
+        elif next_step == "report":
+            return {"next_step": "end"}
+        else:
+            return {"next_step": "end"}
+
+    system_prompt = (
+        "You are a supervisor tasked with managing a conversation between the"
+        " following workers:  [research, synthesis, compliance, report].\n"
+        "Given the following user request and current state, respond with the worker to act next.\n"
+        "1. If research is needed or missing, choose 'research'.\n"
+        "2. If research is done but no draft answer exists, choose 'synthesis'.\n"
+        "3. If draft exists but not verified, choose 'citation'.\n"
+        "4. If verified but not checked for compliance, choose 'compliance'.\n"
+        "5. If compliance is done, choose 'report'.\n"
+        "6. If everything is complete, choose 'FINISH'."
+    )
+    
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+    structured_llm = llm.with_structured_output(Router)
+    
+    # Create a prompt with history
+    # We simplify history for the router to avoid token limits
+    response = await structured_llm.ainvoke(
+        [{"role": "system", "content": system_prompt}] + messages[-5:]
+    )
+    
+    next_node = response.next
+    if next_node == "FINISH":
+        next_node = "end"
+        
+    return {"next_step": next_node}
+
+ingestion_agent = IngestionRetrievalAgent()
+web_agent = WebResearchAgent()
+synthesis_agent = SynthesisReportAgent()
+citation_agent = CitationAgent()
+compliance_agent = ComplianceAgent()
+
+
+async def research_node(state: AgentState):
+    """
+    Performs RAG and Web Research.
+    """
+    print("--- Node: Research ---")
+    job_id = state.get("job_id")
+    
+    query = state["messages"][0].content
+    
+    # 1. RAG
+    context = await ingestion_agent.call("retrieve", query)
+    
+    # 2. Web Search
+    try:
+        web_results = await web_agent.call("search", query, max_results=5)
+    except Exception as e:
+        web_results = [{"error": str(e)}]
+        
+    return {
+        "research_data": {
+            "context": context,
+            "web_results": web_results
+        },
+        "messages": [AIMessage(content=f"Research complete. Found {len(web_results)} chars of web data.")]
+    }
+
+async def synthesis_node(state: AgentState):
+    """
+    Synthesizes the answer using LLM.
+    """
+    print("--- Node: Synthesis ---")
+    job_id = state.get("job_id")
+    
+    query = state["messages"][0].content
+    data = state["research_data"]
+    
+    response_payload = await synthesis_agent.call(
+        "generate_report",
+        query,
+        {
+            "web_results": data.get("web_results", ""),
+            "context": data.get("context", ""),
+            "sections": [],
+            "citations": [],
+        },
+    )
+    
+    # Manual merge of artifacts
+    current_artifacts = state.get("artifacts", {}).copy()
+    # Store the FULL structured report, not just the summary
+    current_artifacts.update({"draft_answer": response_payload})
+    
+    return {
+        "messages": [AIMessage(content=response_payload["summary"])],
+        "artifacts": current_artifacts
+    }
+
+async def citation_node(state: AgentState):
+    """
+    Verifies citations in the draft answer.
+    """
+    print("--- Node: Citation ---")
+    job_id = state.get("job_id")
+    
+    draft = state["artifacts"].get("draft_answer", "")
+    
+    # If draft is a dict (structured report), format it to string for verification
+    if isinstance(draft, dict):
+        draft_text = synthesis_agent.format_report(draft)
+    else:
+        draft_text = draft
+    data = state["research_data"]
+    
+    # Combine web results and context into a single list of sources for verification
+    # Note: This is a simplification. Ideally, we'd have a structured list of sources.
+    # For now, we'll pass the raw data and let the agent/tool handle parsing if needed,
+    # or we can construct a simple list here.
+    
+    # Assuming web_results is a list of dicts as per recent fix
+    sources = data.get("web_results", [])
+    if isinstance(sources, list):
+        # Ensure it matches what verify_citations_internal expects (id, title, text)
+        # WebResearchAgent returns: title, date, quote, url
+        formatted_sources = []
+        for i, s in enumerate(sources):
+            formatted_sources.append({
+                "id": str(i+1),
+                "title": s.get("title", "Unknown"),
+                "text": s.get("quote", ""),
+                "url": s.get("url", "")
+            })
+        sources = formatted_sources
+    else:
+        sources = []
+
+    verification_result = await citation_agent.call("verify", draft_text, sources)
+    
+    # Manual merge of artifacts
+    current_artifacts = state.get("artifacts", {}).copy()
+    current_artifacts.update({"verification_result": verification_result})
+
+    return {
+        "messages": [AIMessage(content=f"Citation verification complete. Score: {verification_result.get('score', 0)}")],
+        "artifacts": current_artifacts
+    }
+
+async def compliance_node(state: AgentState):
+    """
+    Checks for PII and compliance.
+    """
+    print("--- Node: Compliance ---")
+    job_id = state.get("job_id")
+    
+    draft = state["artifacts"].get("draft_answer", "")
+    
+    # If draft is a dict (structured report), format it to string for redaction
+    if isinstance(draft, dict):
+        draft_text = synthesis_agent.format_report(draft)
+    else:
+        draft_text = draft
+    
+    # Redact PII
+    # We force approval for demonstration of HITL
+    
+    # Check for PII first (mock check or real)
+    # For this milestone, we interrupt to ask for confirmation
+    
+    # 1. Interrupt Graph
+    # The value returned by interrupt() will be the payload provided when resuming
+    approval_data = interrupt({"msg": "Approve redaction?"})
+    
+    print(f"--- Resume with data: {approval_data} ---")
+    
+    if approval_data.get("action") != "approve":
+         return {
+            "messages": [AIMessage(content="Compliance approval denied.")],
+            "artifacts": {"final_answer": "[BLOCKED BY COMPLIANCE]"}
+        }
+
+    # 2. Proceed with enforcement
+    compliance_result = await compliance_agent.call("redact", draft_text, require_approval=False)
+    redacted = compliance_result["redacted_text"]
+    
+    # Manual merge of artifacts
+    current_artifacts = state.get("artifacts", {}).copy()
+    current_artifacts.update({"final_answer": redacted})
+    
+    return {
+        "messages": [AIMessage(content="Compliance check complete. Approved.")],
+        "artifacts": current_artifacts
+    }
+
+async def report_node(state: AgentState):
+    """
+    Generates PDF/DOCX reports.
+    """
+    print("--- Node: Report ---")
+    job_id = state.get("job_id")
+    
+    final_answer = state["artifacts"].get("final_answer", "")
+    job_id = state.get("job_id")
+    
+    report_paths = {}
+    try:
+        report_paths = await synthesis_agent.call("export", final_answer, job_id=job_id)
+    except Exception as e:
+        print(f"Report generation failed: {e}")
+        
+    # Manual merge of artifacts
+    current_artifacts = state.get("artifacts", {}).copy()
+    current_artifacts.update({"final_report": report_paths})
+
+    return {
+        "messages": [AIMessage(content=f"Reports generated: {report_paths}")],
+        "final_report": report_paths,
+        "artifacts": current_artifacts
+    }
+
+# --- Graph Construction ---
+
+workflow = StateGraph(AgentState)
+
+workflow.add_node("supervisor", supervisor_node)
+workflow.add_node("research", research_node)
+workflow.add_node("synthesis", synthesis_node)
+workflow.add_node("citation", citation_node)
+workflow.add_node("compliance", compliance_node)
+workflow.add_node("report", report_node)
+
+# Edges
+workflow.set_entry_point("supervisor")
+
+# Conditional edges from supervisor
+def route_step(state: AgentState):
+    return state["next_step"]
+
+workflow.add_conditional_edges(
+    "supervisor",
+    route_step,
+    {
+        "research": "research",
+        "synthesis": "synthesis",
+        "citation": "citation",
+        "compliance": "compliance",
+        "report": "report",
+        "end": END
+    }
+)
+
+# Return to supervisor after each step
+workflow.add_edge("research", "supervisor")
+workflow.add_edge("synthesis", "supervisor")
+workflow.add_edge("citation", "supervisor")
+workflow.add_edge("compliance", "supervisor")
+workflow.add_edge("report", "supervisor")
+
+# Compile
+checkpointer = MemorySaver()
+graph = workflow.compile(checkpointer=checkpointer)
