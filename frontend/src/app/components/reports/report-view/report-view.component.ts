@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ApiService, Report } from '../../../services/api.service';
+import { environment } from '../../../../environments/environment';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -23,6 +25,10 @@ export class ReportViewComponent implements OnInit {
   loading: boolean = true;
   error: string = '';
 
+  // PDF Preview
+  pdfPreviewUrl: SafeResourceUrl | null = null;
+  showPdf: boolean = false;
+
   // Chat
   messages: Message[] = [];
   chatInput: string = '';
@@ -32,8 +38,9 @@ export class ReportViewComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private apiService: ApiService
-  ) {}
+    private apiService: ApiService,
+    private sanitizer: DomSanitizer
+  ) { }
 
   ngOnInit() {
     this.reportId = +this.route.snapshot.paramMap.get('id')!;
@@ -107,6 +114,16 @@ export class ReportViewComponent implements OnInit {
         alert('Failed to download report');
       }
     });
+  }
+
+  togglePdf() {
+    this.showPdf = !this.showPdf;
+    if (this.showPdf && !this.pdfPreviewUrl) {
+      // Construct URL: /research/download/{job_id}/pdf
+      // Note: Assuming reportId corresponds to job_id as per backend logic
+      const url = `${environment.apiBaseUrl}/research/download/${this.reportId}/pdf`;
+      this.pdfPreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    }
   }
 
   editReport() {

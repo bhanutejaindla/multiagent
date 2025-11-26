@@ -34,3 +34,7 @@ class ComplianceAgent(BaseAgent):
             "redacted_text": redacted,
             "approval_required": require_approval,
         }
+
+    async def enforce(self, text: str, require_approval: bool = False) -> Dict[str, Any]:
+        """Alias for redact to maintain compatibility."""
+        return await self.redact(text, require_approval)

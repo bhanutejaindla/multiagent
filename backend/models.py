@@ -22,7 +22,14 @@ class User(SQLModel, table=True):
     role: UserRole = Field(default=UserRole.USER)
     full_name: Optional[str] = None
     name: str # Keeping for backward compatibility or display name
+    quota_limit: int = Field(default=10)
     jobs: List["Job"] = Relationship(back_populates="user")
+
+class ToolState(SQLModel, table=True):
+    __tablename__ = "tool_states"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    name: str = Field(unique=True, index=True)
+    is_enabled: bool = Field(default=True)
 
 class Agent(SQLModel, table=True):
     __tablename__ = "agents"

@@ -22,3 +22,4 @@ passlib[argon2]
 python-multipart
 structlog
 langfuse
+pdfplumber

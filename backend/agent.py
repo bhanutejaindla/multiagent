@@ -38,12 +38,16 @@ class ResearchAgent:
         self.langfuse_handler = CallbackHandler()
         self.orchestrator = OrchestratorAgent(self.graph)
 
-    async def run(self, query: str, thread_id: str = "default"):
+    async def run(self, query: str, thread_id: str = "default", job_id: Optional[int] = None):
         """Executes the agent workflow for a given query."""
-        print(f"--- Starting ResearchAgent for Query: {query} ---")
+        # Use provided job_id or try to parse from thread_id
+        if job_id is None and thread_id.isdigit():
+            job_id = int(thread_id)
+            
+        print(f"--- Starting ResearchAgent for Query: {query} (job_id: {job_id}) ---")
         
         try:
-            result = await self.orchestrator.run_research_flow(query, job_id=int(thread_id) if thread_id.isdigit() else None)
+            result = await self.orchestrator.run_research_flow(query, job_id=job_id)
             return result
         except Exception as e:
             import traceback

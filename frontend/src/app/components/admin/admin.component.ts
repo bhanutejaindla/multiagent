@@ -59,4 +59,36 @@ export class AdminComponent implements OnInit {
             }
         });
     }
+
+    updateQuota(user: User, newQuota: string) {
+        const quota = parseInt(newQuota, 10);
+        if (isNaN(quota) || quota < 0) return;
+
+        this.adminService.updateQuota(user.id, quota).subscribe({
+            next: () => {
+                user.quota_limit = quota;
+                alert(`Quota updated for ${user.username}`);
+            },
+            error: (err) => {
+                console.error(err);
+                alert('Failed to update quota');
+            }
+        });
+    }
+
+    toggleTool(tool: ToolStatus) {
+        const newState = !tool.is_enabled;
+        this.adminService.toggleTool(tool.name, newState).subscribe({
+            next: () => {
+                tool.is_enabled = newState;
+                tool.status = newState ? 'available' : 'disabled';
+            },
+            error: (err) => {
+                console.error(err);
+                // Revert UI on error
+                tool.is_enabled = !newState;
+                alert('Failed to toggle tool');
+            }
+        });
+    }
 }

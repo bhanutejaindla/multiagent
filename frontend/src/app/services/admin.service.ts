@@ -17,12 +17,14 @@ export interface User {
     email: string;
     role: string;
     name: string;
+    quota_limit: number;
 }
 
 export interface ToolStatus {
     name: string;
     status: string;
     functions: string[];
+    is_enabled: boolean;
 }
 
 @Injectable({
@@ -42,5 +44,13 @@ export class AdminService {
 
     getTools(): Observable<ToolStatus[]> {
         return this.http.get<ToolStatus[]>(`${this.apiUrl}/tools`);
+    }
+
+    updateQuota(userId: number, quota: number): Observable<any> {
+        return this.http.put(`${this.apiUrl}/users/${userId}/quota`, null, { params: { quota: quota.toString() } });
+    }
+
+    toggleTool(toolName: string, enabled: boolean): Observable<any> {
+        return this.http.post(`${this.apiUrl}/tools/${toolName}/toggle`, null, { params: { enabled: enabled.toString() } });
     }
 }

@@ -9,6 +9,9 @@
         <button class="btn btn-secondary" (click)="editReport()">Edit</button>
         <button class="btn btn-secondary" (click)="downloadReport('docx')">Download DOCX</button>
         <button class="btn btn-secondary" (click)="downloadReport('pdf')">Download PDF</button>
+        <button class="btn btn-secondary" (click)="togglePdf()">
+          {{ showPdf ? 'Hide' : 'Preview' }} PDF
+        </button>
         <button class="btn btn-primary" (click)="toggleChat()">
           {{ showChat ? 'Hide' : 'Show' }} Chat
         </button>
@@ -46,6 +49,13 @@
               </div>
             </div>
           </div>
+
+          <!-- PDF Preview Panel -->
+          <div class="pdf-panel" *ngIf="showPdf">
+            <div class="pdf-container">
+              <iframe [src]="pdfPreviewUrl" width="100%" height="800px" frameborder="0"></iframe>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -72,14 +82,8 @@
 
       <div class="chat-input-area">
         <form (ngSubmit)="sendChatMessage()" class="chat-form">
-          <input
-            type="text"
-            [(ngModel)]="chatInput"
-            name="chatInput"
-            class="chat-input"
-            placeholder="Ask a question about the report..."
-            [disabled]="chatLoading"
-          />
+          <input type="text" [(ngModel)]="chatInput" name="chatInput" class="chat-input"
+            placeholder="Ask a question about the report..." [disabled]="chatLoading" />
           <button type="submit" class="btn btn-primary" [disabled]="chatLoading || !chatInput.trim()">
             Send
           </button>
@@ -88,4 +92,3 @@
     </div>
   </div>
 </div>
-

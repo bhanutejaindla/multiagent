@@ -129,9 +129,19 @@ async def research_node(state: AgentState):
     query = state["messages"][0].content
     
     # 1. RAG
-    context = await ingestion_agent.call("retrieve", query)
+    # 1. RAG
+    print(f"--- RAG Retrieval for: {query} (Job ID: {job_id}) ---")
+    try:
+        context = await ingestion_agent.call("retrieve", query, job_id=job_id)
+        rag_count = len(context) if context else 0
+        print(f"--- RAG Result: Retrieved {rag_count} chars ---")
+    except Exception as e:
+        print(f"--- RAG Error: {e} ---")
+        context = ""
+        rag_count = 0
     
     # 2. Web Search
+    print(f"--- Web Search for: {query} ---")
     try:
         web_results = await web_agent.call("search", query, max_results=5)
     except Exception as e:
@@ -142,7 +152,7 @@ async def research_node(state: AgentState):
             "context": context,
             "web_results": web_results
         },
-        "messages": [AIMessage(content=f"Research complete. Found {len(web_results)} chars of web data.")]
+        "messages": [AIMessage(content=f"Research complete. Retrieved {rag_count} chars from RAG and found {len(web_results)} web sources.")]
     }
 
 async def synthesis_node(state: AgentState):
@@ -171,8 +181,11 @@ async def synthesis_node(state: AgentState):
     # Store the FULL structured report, not just the summary
     current_artifacts.update({"draft_answer": response_payload})
     
+    # Format the full report for the chat output
+    full_report_text = synthesis_agent.format_report(response_payload)
+    
     return {
-        "messages": [AIMessage(content=response_payload["summary"])],
+        "messages": [AIMessage(content=full_report_text)],
         "artifacts": current_artifacts
     }
 

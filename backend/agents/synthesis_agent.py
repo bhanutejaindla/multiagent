@@ -1,151 +1,289 @@
 from __future__ import annotations
 
 import asyncio
-import json
+
 import os
-from typing import Dict, Any
+
+from typing import Dict, Any, List
 
 from langchain_openai import ChatOpenAI
+
 from langchain_core.prompts import ChatPromptTemplate
 
+from pydantic import BaseModel, Field
+
 from .base import BaseAgent, AgentCard
+
 from ..report_generator import ReportGenerator
 
- 
-class SynthesisReportAgent(BaseAgent):
-    """Generates structured reports from gathered evidence."""
+# ----------------------------
 
-    def __init__(self) -> None:
+# Pydantic Models
+
+# ----------------------------
+
+class Citation(BaseModel):
+
+    id: int
+
+    source: str
+
+    url: str
+
+    quote: str
+
+class TableRow(BaseModel):
+
+    cells: List[str]
+
+class Table(BaseModel):
+
+    title: str
+
+    headers: List[str]
+
+    rows: List[TableRow]
+
+class Section(BaseModel):
+
+    title: str
+
+    content: str
+
+class ResearchReport(BaseModel):
+
+    summary: str
+
+    sections: List[Section]
+
+    tables: List[Table] = []
+
+    citations: List[Citation] = []
+
+# ----------------------------
+
+# Agent Implementation
+
+# ----------------------------
+
+class SynthesisReportAgent(BaseAgent):
+
+    def __init__(self):
+
         super().__init__(
+
             AgentCard(
+
                 name="synthesis_report_agent",
-                description="Creates structured research reports with inline citations and exports.",
-                capabilities=[
-                    "generate_sections",
-                    "produce_tables",
-                    "export_report",
-                ],
-                rate_limit_per_minute=6,
+
+                description="Creates structured research reports with citations.",
+
+                capabilities=["generate_sections", "produce_tables", "export_report"],
+
+                rate_limit_per_minute=10,
+
             )
+
         )
 
-        self.llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+        # IMPORTANT: Use large model for long structured output
+
+        self.llm = ChatOpenAI(model="gpt-4o", temperature=0)
+
+        self.structured_llm = self.llm.with_structured_output(ResearchReport)
 
         self.prompt = ChatPromptTemplate.from_template(
+
             """
-You are the Synthesis & Report agent.
-Create a structured research report using ONLY the provided evidence.
 
-User Query: {query}
-Web Findings: {web_findings}
-Retrieved Evidence: {rag_context}
+You are an expert Research Analyst.
 
-CRITICAL INSTRUCTION:
-- Focus STRICTLY on the User Query.
-- Ignore any information in the "Retrieved Evidence" that is not directly relevant to the User Query.
-- Do not include project metadata, assignment details, or unrelated examples unless requested.
+Write a long, detailed research report based ONLY on the evidence.
 
+----------------
 
-Return STRICT JSON:
-{{
-  "summary": "...",
-  "sections": [
-    {{"title": "Section Title", "content": "Long content with citations [1]"}}
-  ],
-  "tables": [
-    {{"title": "Table Title", "rows": [["col1","col2"],["v1","v2"]]}}
-  ],
-  "citations": [
-    {{"id": 1, "source": "Title", "url": "...", "quote": "..."}}
-  ]
-}}
+USER QUERY:
+
+{query}
+
+----------------
+
+WEB FINDINGS:
+
+{web_block}
+
+----------------
+
+RAG CONTEXT:
+
+{rag_block}
+
+----------------
+
+CITATION SOURCES:
+
+{citation_block}
+
+----------------
+
+INSTRUCTIONS:
+
+- Produce a structured research report.
+
+- The executive summary must be 2–3 paragraphs.
+
+- Each section MUST contain 3–4 paragraphs.
+
+- Each paragraph MUST be 5–8 sentences minimum. Never compress content.
+
+- Every section should include inline citations using [1], [2], etc.
+
+- The "citations" list MUST correspond exactly to the inline IDs used.
+
+- If evidence is weak, clearly state limitations.
+
 """
+
         )
 
-        self.generator = ReportGenerator()     
+        self.generator = ReportGenerator()
+
+    # -----------------------------
+
+    # MAIN METHOD CALLED BY GRAPH
+
+    # -----------------------------
 
     async def generate_report(self, query: str, evidence: Dict[str, Any]) -> Dict[str, Any]:
-        """Generates structured JSON report using LLM."""
+
         
-        # Mock fallback if no API key
-        if not os.getenv("OPENAI_API_KEY"):
-            print("WARNING: OPENAI_API_KEY not found. Using mock synthesis response.")
-            return {
-                "summary": f"Mock Report for: {query}",
-                "sections": [
-                    {"title": "Introduction", "content": "This is a mock introduction based on the query."}
-                ],
-                "tables": [],
-                "citations": []
-            }
 
-        chain = self.prompt | self.llm
+        # Build WEB BLOCK
+        web_sources = evidence.get("web_results", [])
+        web_block = ""
+        citation_block = ""
 
-        response = await chain.ainvoke(
-            {
-                "query": query,
-                "web_findings": evidence.get("web_results", ""),
-                "rag_context": evidence.get("context", ""),
-            }
-        )
+        # Fix Issue 2: Auto-generate IDs
+        for i, src in enumerate(web_sources, 1):
+            # Ensure ID exists, default to loop index
+            src_id = src.get("id", str(i))
+            title = src.get("title", "Unknown Source")
+            url = src.get("url", "N/A")
+            quote = src.get("quote", "") or src.get("snippet", "") or src.get("body", "")
+            
+            web_block += f"[{src_id}] {title}\nURL: {url}\nQuote: {quote}\n\n"
+            citation_block += f"[{src_id}] {title} — {url}\n"
 
-        raw = response.content.strip()
+        # Fix Issue 1: Ensure RAG context is string
+        rag_raw = evidence.get("context", "")
+        if isinstance(rag_raw, (dict, list)):
+            rag_block = str(rag_raw)
+        else:
+            rag_block = str(rag_raw)
 
-        # Handle triple-backtick code formatting
-        if raw.startswith("```"):
-            raw = raw.split("```")[1]
+        # Run LLM with structured output
+        chain = self.prompt | self.structured_llm
 
-        # Parse JSON safely
         try:
-            parsed = json.loads(raw)
+
+            report: ResearchReport = await chain.ainvoke({
+
+                "query": query,
+
+                "web_block": web_block,
+
+                "rag_block": rag_block,
+
+                "citation_block": citation_block,
+
+            })
+
+            parsed = report.model_dump()
+
+            # flatten table rows
+
+            for table in parsed.get("tables", []):
+
+                table["rows"] = [row["cells"] for row in table.get("rows", [])]
+
+            return parsed
+
         except Exception as e:
-            parsed = {
-                "summary": raw,
-                "sections": [],
+
+            return {
+
+                "summary": "Failed to generate structured report.",
+
+                "sections": [
+
+                    {"title": "Error", "content": f"Error: {str(e)}"}
+
+                ],
+
                 "tables": [],
-                "citations": [],
-                "error": f"JSON parsing failed: {str(e)}"
+
+                "citations": []
+
             }
 
-        return parsed
+    # -----------------------------
+
+    # FORMATTER FOR EXPORT
+
+    # -----------------------------
 
     def format_report(self, report: Dict[str, Any]) -> str:
-        """Formats the structured report dictionary into a string."""
-        lines = []
-        if "summary" in report:
-            lines.append(f"Summary\n=======\n{report['summary']}\n")
-        
-        if "sections" in report:
-            for section in report["sections"]:
-                lines.append(f"\n{section.get('title', 'Section')}\n{'-'*len(section.get('title', 'Section'))}\n{section.get('content', '')}")
-        
-        if "tables" in report:
-            for table in report["tables"]:
-                lines.append(f"\nTable: {table.get('title', '')}")
-                for row in table.get("rows", []):
-                    lines.append(" | ".join(str(x) for x in row))
-        
-        if "citations" in report:
-            lines.append("\nReferences\n==========")
-            for cit in report["citations"]:
-                lines.append(f"[{cit.get('id')}] {cit.get('source')} - {cit.get('url')}")
-        
-        return "\n".join(lines)
 
-    async def export(self, final_answer: str | Dict[str, Any], job_id: int | None = None) -> Dict[str, str]:
-        """Exports DOCX and PDF versions of the final report."""
+        out = []
+
+        out.append("Summary\n=======\n")
+
+        out.append(report["summary"])
+
+        out.append("\n")
+
+        for sec in report["sections"]:
+
+            out.append(f"\n{sec['title']}\n{'-'*len(sec['title'])}\n{sec['content']}\n")
+
+        if report.get("tables"):
+
+            for t in report["tables"]:
+
+                out.append(f"\nTable: {t['title']}")
+
+                out.append(" | ".join(t["headers"]))
+
+                for row in t["rows"]:
+
+                    out.append(" | ".join(row))
+
+        if report.get("citations"):
+
+            out.append("\nReferences\n==========")
+
+            for c in report["citations"]:
+
+                out.append(f"[{c['id']}] {c['source']} — {c['url']}")
+
+        return "\n".join(out)
+
+    # -----------------------------
+
+    # EXPORT PDF + DOCX
+
+    # -----------------------------
+
+    async def export(self, final_answer, job_id=None) -> Dict[str, str]:
+
         filename = f"report_{job_id}" if job_id else "report_preview"
 
-        # Format dictionary to string if needed
-        content = final_answer
         if isinstance(final_answer, dict):
-            content = self.format_report(final_answer)
 
-        docx_path = await asyncio.to_thread(
-            self.generator.generate_docx, content, filename
-        )
-        pdf_path = await asyncio.to_thread(
-            self.generator.generate_pdf, content, filename
-        )
+            final_answer = self.format_report(final_answer)
 
-        return {"docx": docx_path, "pdf": pdf_path}
+        docx = await asyncio.to_thread(self.generator.generate_docx, final_answer, filename)
+
+        pdf = await asyncio.to_thread(self.generator.generate_pdf, final_answer, filename)
+
+        return {"docx": docx, "pdf": pdf}

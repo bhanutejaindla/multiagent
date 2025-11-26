@@ -238,6 +238,13 @@ async def create_job(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session)
 ):
+    # Check Quota
+    statement = select(func.count(Job.id)).where(Job.user_id == current_user.id).where(Job.status.in_([JobStatus.pending, JobStatus.running]))
+    active_jobs_count = session.exec(statement).one()
+    
+    if active_jobs_count >= current_user.quota_limit:
+        raise HTTPException(status_code=400, detail=f"Job quota exceeded. Limit: {current_user.quota_limit}, Active: {active_jobs_count}")
+
     # Create a new job in DB
     job = Job(type="research", user_id=current_user.id, name="New Research Job")
     session.add(job)
@@ -325,8 +332,8 @@ async def ingest_document(
         session.add(job)
         session.commit()
 
-        # Index in Vector DB
-        num_chunks = await asyncio.to_thread(add_document, text_content, source=file.filename)
+        # Index in Vector DB with job_id
+        num_chunks = await asyncio.to_thread(add_document, text_content, source=file.filename, job_id=str(job.id))
         
         # Update Job: Completed
         job.status = JobStatus.completed

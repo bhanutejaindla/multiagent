@@ -47,6 +47,10 @@
                                 Email</th>
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Role</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Quota</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
@@ -61,6 +65,17 @@
                                     {{ user.role }}
                                 </span>
                             </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ user.quota_limit }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <div class="flex items-center gap-2">
+                                    <input #quotaInput type="number" [value]="user.quota_limit"
+                                        class="w-16 border rounded px-2 py-1 text-sm" min="0">
+                                    <button (click)="updateQuota(user, quotaInput.value)"
+                                        class="text-blue-600 hover:text-blue-900 text-xs border border-blue-600 px-2 py-1 rounded">Update</button>
+                                </div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -74,10 +89,22 @@
             </div>
             <div class="p-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div *ngFor="let tool of tools" class="border rounded-lg p-4">
+                    <div *ngFor="let tool of tools" class="border rounded-lg p-4"
+                        [ngClass]="{'bg-gray-50': !tool.is_enabled}">
                         <div class="flex justify-between items-center mb-2">
-                            <h3 class="font-bold text-lg">{{ tool.name }}</h3>
-                            <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-800">{{ tool.status }}</span>
+                            <h3 class="font-bold text-lg" [ngClass]="{'text-gray-500': !tool.is_enabled}">{{ tool.name
+                                }}</h3>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-1 text-xs rounded"
+                                    [ngClass]="{'bg-green-100 text-green-800': tool.is_enabled, 'bg-red-100 text-red-800': !tool.is_enabled}">
+                                    {{ tool.status }}
+                                </span>
+                                <button (click)="toggleTool(tool)"
+                                    class="px-3 py-1 text-xs rounded font-medium text-white transition-colors"
+                                    [ngClass]="{'bg-red-500 hover:bg-red-600': tool.is_enabled, 'bg-green-500 hover:bg-green-600': !tool.is_enabled}">
+                                    {{ tool.is_enabled ? 'Disable' : 'Enable' }}
+                                </button>
+                            </div>
                         </div>
                         <p class="text-sm text-gray-600 mb-2">Functions:</p>
                         <div class="flex flex-wrap gap-2">
