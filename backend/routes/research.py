@@ -106,6 +106,7 @@ async def chat_qa(
     
     try:
         # Run agent with job_id as thread_id and pass job_id explicitly
+        # Run agent with job_id as thread_id and pass job_id explicitly
         result = await agent_runner.run(query, thread_id=str(job_id), job_id=job_id)
         
         # Update job with result (optional, or just return it)
@@ -162,11 +163,23 @@ async def generate_report_route(
         # Generate Report
         paths = await synthesis_agent.export(final_answer, job_id=job_id)
         
+        # Create Report Record
+        from ..models import Report
+        report = Report(
+            job_id=job_id,
+            content=str(final_answer) if isinstance(final_answer, str) else synthesis_agent.format_report(final_answer),
+            file_path=paths["pdf"] # Storing PDF path as primary
+        )
+        db.add(report)
+        db.commit()
+        db.refresh(report)
+        
         return {
             "message": "Report generated",
+            "report_id": report.id,
             "paths": paths,
-            "download_url_pdf": f"/research/download/{job_id}/pdf",
-            "download_url_docx": f"/research/download/{job_id}/docx"
+            "download_url_pdf": f"/reports/{report.id}/download?format=pdf",
+            "download_url_docx": f"/reports/{report.id}/download?format=docx"
         }
 
     except Exception as e:

@@ -26,18 +26,38 @@
         <span class="toolbar-hint">Changes will be saved as a new version</span>
       </div>
 
-      <textarea
-        [(ngModel)]="editedContent"
-        class="content-editor"
-        placeholder="Enter report content..."
-      ></textarea>
+      <!-- Structured Editor -->
+      <div *ngIf="isStructured" class="structured-editor">
+        <div class="form-group">
+          <label>Executive Summary</label>
+          <textarea [(ngModel)]="executiveSummary" class="form-control" rows="5"></textarea>
+        </div>
 
-      <div class="editor-footer">
-        <div class="char-count">
-          {{ editedContent.length }} characters
+        <div class="form-group">
+          <label>Findings (one per line)</label>
+          <textarea [(ngModel)]="findings" class="form-control" rows="5"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Risks (one per line)</label>
+          <textarea [(ngModel)]="risks" class="form-control" rows="5"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Full Text / Additional Notes</label>
+          <textarea [(ngModel)]="fullText" class="form-control" rows="10"></textarea>
+        </div>
+      </div>
+
+      <!-- Unstructured Editor -->
+      <div *ngIf="!isStructured">
+        <textarea [(ngModel)]="editedContent" class="content-editor" placeholder="Enter report content..."></textarea>
+        <div class="editor-footer">
+          <div class="char-count">
+            {{ editedContent.length }} characters
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-

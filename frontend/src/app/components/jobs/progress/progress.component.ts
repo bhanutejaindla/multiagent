@@ -24,7 +24,7 @@ export class ProgressComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private apiService: ApiService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.jobId = +this.route.snapshot.paramMap.get('id')!;
@@ -47,7 +47,8 @@ export class ProgressComponent implements OnInit, OnDestroy {
         // Redirect to report view if completed
         if (job.status === 'completed') {
           setTimeout(() => {
-            this.router.navigate(['/reports', job.id]);
+            const reportId = job.reports && job.reports.length > 0 ? job.reports[0].id : job.id;
+            this.router.navigate(['/reports', reportId]);
           }, 2000);
         }
       },
@@ -58,7 +59,15 @@ export class ProgressComponent implements OnInit, OnDestroy {
     });
   }
 
+  currentAgent: string = 'Initializing...';
+  estimatedTimeRemaining: string = 'Calculating...';
+  simulatedProgress: number = 0;
+
   startPolling() {
+    // Simulate progress for better UX
+    const startTime = Date.now();
+    const estimatedDuration = 240000; // 4 minutes in ms
+
     this.subscription = interval(this.pollInterval)
       .pipe(
         switchMap(() => this.apiService.getJob(this.jobId))
@@ -66,7 +75,35 @@ export class ProgressComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (job) => {
           this.job = job;
-          if (job.status === 'completed' || job.status === 'failed') {
+
+          // Update simulated progress based on time if job is running
+          if (job.status === 'running') {
+            const elapsed = Date.now() - startTime;
+            const timeProgress = Math.min((elapsed / estimatedDuration) * 100, 95);
+            this.simulatedProgress = Math.max(this.simulatedProgress, timeProgress, job.progress);
+
+            // Calculate remaining time
+            const remainingMs = Math.max(0, estimatedDuration - elapsed);
+            const minutes = Math.floor(remainingMs / 60000);
+            const seconds = Math.floor((remainingMs % 60000) / 1000);
+            this.estimatedTimeRemaining = `${minutes}m ${seconds}s`;
+
+            // Cycle agent names based on progress
+            if (this.simulatedProgress < 20) this.currentAgent = 'Ingestion Agent: Analyzing documents...';
+            else if (this.simulatedProgress < 40) this.currentAgent = 'Web Research Agent: Searching online sources...';
+            else if (this.simulatedProgress < 60) this.currentAgent = 'Synthesis Agent: Structuring report...';
+            else if (this.simulatedProgress < 80) this.currentAgent = 'Citation Agent: Verifying sources...';
+            else this.currentAgent = 'Compliance Agent: Finalizing report...';
+
+          } else if (job.status === 'completed') {
+            this.simulatedProgress = 100;
+            this.currentAgent = 'All tasks completed!';
+            this.estimatedTimeRemaining = '0m 0s';
+            if (this.subscription) {
+              this.subscription.unsubscribe();
+            }
+          } else if (job.status === 'failed') {
+            this.currentAgent = 'Job Failed';
             if (this.subscription) {
               this.subscription.unsubscribe();
             }

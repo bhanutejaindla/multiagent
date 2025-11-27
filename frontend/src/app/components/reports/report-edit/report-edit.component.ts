@@ -23,18 +23,36 @@ export class ReportEditComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private apiService: ApiService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.reportId = +this.route.snapshot.paramMap.get('id')!;
     this.loadReport();
   }
 
+  // Form fields
+  executiveSummary: string = '';
+  findings: string = '';
+  risks: string = '';
+  fullText: string = '';
+  isStructured: boolean = false;
+
   loadReport() {
     this.apiService.getReport(this.reportId).subscribe({
       next: (report) => {
         this.report = report;
-        this.editedContent = report.content;
+
+        if (report.content && typeof report.content === 'object') {
+          this.isStructured = true;
+          this.executiveSummary = report.content.executive_summary || '';
+          this.findings = Array.isArray(report.content.findings) ? report.content.findings.join('\n') : '';
+          this.risks = Array.isArray(report.content.risks) ? report.content.risks.join('\n') : '';
+          this.fullText = report.content.full_text || '';
+        } else {
+          this.isStructured = false;
+          this.editedContent = typeof report.content === 'string' ? report.content : JSON.stringify(report.content, null, 2);
+        }
+
         this.loading = false;
       },
       error: (err) => {
@@ -45,15 +63,29 @@ export class ReportEditComponent implements OnInit {
   }
 
   saveReport() {
-    if (!this.editedContent.trim()) {
-      this.error = 'Report content cannot be empty';
-      return;
+    let contentToSave: any;
+
+    if (this.isStructured) {
+      contentToSave = {
+        ...this.report?.content, // Keep existing fields like citations
+        executive_summary: this.executiveSummary,
+        findings: this.findings.split('\n').filter(line => line.trim()),
+        risks: this.risks.split('\n').filter(line => line.trim()),
+        full_text: this.fullText
+      };
+    } else {
+      if (!this.editedContent.trim()) {
+        this.error = 'Report content cannot be empty';
+        return;
+      }
+      contentToSave = this.editedContent;
     }
 
     this.saving = true;
     this.error = '';
 
-    this.apiService.updateReport(this.reportId, this.editedContent).subscribe({
+    const jobId = this.report?.job_id || this.reportId;
+    this.apiService.updateReport(jobId, contentToSave).subscribe({
       next: (updatedReport) => {
         this.saving = false;
         this.router.navigate(['/reports', this.reportId]);

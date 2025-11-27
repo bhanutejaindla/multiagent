@@ -119,13 +119,11 @@ export class ReportViewComponent implements OnInit {
   togglePdf() {
     this.showPdf = !this.showPdf;
     if (this.showPdf && !this.pdfPreviewUrl) {
-      // Construct URL: /research/download/{job_id}/pdf
-      // Note: Assuming reportId corresponds to job_id as per backend logic
-      const url = `${environment.apiBaseUrl}/research/download/${this.reportId}/pdf`;
+      // Construct URL: /reports/{report_id}/download?format=pdf
+      const url = `${environment.apiBaseUrl}/reports/${this.reportId}/download?format=pdf`;
       this.pdfPreviewUrl = this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }
   }
-
   editReport() {
     this.router.navigate(['/reports', this.reportId, 'edit']);
   }
@@ -135,6 +133,9 @@ export class ReportViewComponent implements OnInit {
     return content
       .replace(/\[citation:(\d+)\]/g, '<span class="citation">[Citation $1]</span>')
       .replace(/\n/g, '<br>');
+  }
+  isString(val: any): boolean {
+    return typeof val === 'string';
   }
 }
 

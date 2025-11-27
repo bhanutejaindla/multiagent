@@ -19,9 +19,18 @@
         </div>
         <div class="progress-bar-container">
           <div class="progress-bar">
-            <div class="progress-fill" [style.width.%]="job.progress"></div>
+            <div class="progress-fill" [style.width.%]="simulatedProgress"></div>
           </div>
-          <span class="progress-text">{{ job.progress }}%</span>
+          <span class="progress-text">{{ simulatedProgress | number:'1.0-0' }}%</span>
+        </div>
+        <div class="agent-status" *ngIf="job.status === 'running'">
+          <div class="current-agent">
+            <span class="spinner"></span>
+            {{ currentAgent }}
+          </div>
+          <div class="time-remaining">
+            Estimated time: {{ estimatedTimeRemaining }}
+          </div>
         </div>
       </div>
 
@@ -71,22 +80,14 @@
 
       <!-- Actions -->
       <div class="actions-section">
-        <button
-          *ngIf="job.status === 'running' || job.status === 'pending'"
-          class="btn btn-danger"
-          (click)="cancelJob()"
-        >
+        <button *ngIf="job.status === 'running' || job.status === 'pending'" class="btn btn-danger"
+          (click)="cancelJob()">
           Cancel Job
         </button>
-        <button
-          *ngIf="job.status === 'completed'"
-          class="btn btn-primary"
-          [routerLink]="['/reports', job.id]"
-        >
+        <button *ngIf="job.status === 'completed'" class="btn btn-primary" [routerLink]="['/reports', job.id]">
           View Report
         </button>
       </div>
     </div>
   </div>
 </div>
-

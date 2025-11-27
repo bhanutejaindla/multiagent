@@ -57,3 +57,17 @@ class ResearchAgent:
                 "answer": f"Error: {str(e)}\n\nTraceback:\n{traceback.format_exc()}",
                 "reports": {}
             }
+
+    async def chat_with_context(self, query: str, context: str):
+        """Answers a query based on the provided context (report)."""
+        # Access the LLM from one of the agents or create a new one
+        llm = self.orchestrator.chat_agent.llm
+        if not llm:
+             return "LLM not available."
+        
+        messages = [
+            {"role": "system", "content": "You are a helpful assistant. Answer the user's question based ONLY on the following report content. If the answer is not in the report, say so."},
+            {"role": "user", "content": f"Report Content:\n{context}\n\nQuestion: {query}"}
+        ]
+        response = await llm.ainvoke(messages)
+        return response.content

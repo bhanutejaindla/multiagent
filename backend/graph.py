@@ -18,7 +18,12 @@ from .agents.ingestion_agent import IngestionRetrievalAgent
 from .agents.web_research_agent import WebResearchAgent
 from .agents.synthesis_agent import SynthesisReportAgent
 from .agents.citation_agent import CitationAgent
+from .agents.citation_agent import CitationAgent
 from .agents.compliance_agent import ComplianceAgent
+from .database import engine
+from sqlmodel import Session
+from .models import Report
+from sqlalchemy import update
 
 
 
@@ -285,29 +290,142 @@ async def compliance_node(state: AgentState):
     }
 
 async def report_node(state: AgentState):
-    """
-    Generates PDF/DOCX reports.
-    """
-    print("--- Node: Report ---")
-    job_id = state.get("job_id")
+    print("\n" + "="*60)
+    print("--- Node: Report Generation ---")
+    print("="*60)
     
-    final_answer = state["artifacts"].get("final_answer", "")
     job_id = state.get("job_id")
+    # We manage session locally as it's not passed in state
     
-    report_paths = {}
-    try:
-        report_paths = await synthesis_agent.call("export", final_answer, job_id=job_id)
-    except Exception as e:
-        print(f"Report generation failed: {e}")
-        
-    # Manual merge of artifacts
-    current_artifacts = state.get("artifacts", {}).copy()
-    current_artifacts.update({"final_report": report_paths})
+    artifacts = state.get("artifacts", {})
+    final_answer = artifacts.get("final_answer")
 
+    if not final_answer:
+        # fallback to draft
+        draft = artifacts.get("draft_answer")
+        if isinstance(draft, dict):
+            final_answer = synthesis_agent.format_report(draft)
+        elif isinstance(draft, str):
+            final_answer = draft
+        else:
+            final_answer = "No content available for report."
+
+    print(f"\n[REPORT] Generating PDF and DOCX...")
+    print(f"  - Content length: {len(final_answer)} chars")
+    print(f"  - Job ID: {job_id}")
+
+    report_paths = {}
+    report_id = state.get("report_id") # Check if passed, otherwise create
+    print(f"  - Initial Report ID from state: {report_id}")
+    
+    with Session(engine) as db_session:
+        # Fetch Job to get user_id and details
+        from .models import Job, ReportStatus
+        job = db_session.get(Job, job_id)
+        if not job:
+            print(f"  ✗ Job {job_id} not found!")
+            return {"messages": [AIMessage(content="Job not found for report generation.")]}
+
+        # Ensure we have a report record to update
+        if not report_id:
+            try:
+                print("  - Creating new 'generating' report record...")
+                initial_report = Report(
+                    job_id=job_id, 
+                    user_id=job.user_id,
+                    title=f"Report: {job.name}",
+                    type="comprehensive_report",
+                    content={"summary": "Generating..."}, 
+                    status=ReportStatus.generating
+                )
+                db_session.add(initial_report)
+                db_session.commit()
+                db_session.refresh(initial_report)
+                report_id = initial_report.id
+                print(f"  ✓ Created initial Report record: {report_id}")
+            except Exception as e:
+                print(f"  ✗ Failed to create initial report record: {e}")
+
+        try:
+            report_paths = await synthesis_agent.export(final_answer, job_id=job_id)
+            print(f"  → Generated: {report_paths}")
+            
+            # Prepare structured content
+            # If final_answer is already a dict, use it. If str, wrap it.
+            if isinstance(final_answer, dict):
+                structured_content = final_answer.copy()
+            else:
+                structured_content = {
+                    "executive_summary": str(final_answer)[:500],
+                    "full_text": str(final_answer)
+                }
+            
+            # Ensure citations are present in content
+            # We prioritize existing citations in the answer, but fallback/merge with research data
+            if "citations" not in structured_content or not structured_content["citations"]:
+                 structured_content["citations"] = state.get("research_data", {}).get("web_results", [])
+
+            # ============================================
+            # UPDATE DATABASE AFTER SUCCESSFUL GENERATION
+            # ============================================
+            if report_id:
+                try:
+                    # Update report status, file_url, and generated_at
+                    stmt = update(Report).where(Report.id == report_id).values(
+                        status=ReportStatus.completed,
+                        file_url=report_paths.get('pdf', report_paths.get('docx', '')),
+                        generated_at=datetime.utcnow(),
+                        updated_at=datetime.utcnow(),
+                        content=structured_content,
+                        report_metadata={
+                            **artifacts.get("report_metadata", {}),
+                            "report_paths": report_paths,
+                            "compliance_assessment": artifacts.get("compliance_assessment"),
+                            "verification_score": artifacts.get("verification_result", {}).get("score")
+                        }
+                    )
+                    
+                    db_session.execute(stmt)
+                    db_session.commit()
+                    
+                    print(f"  ✓ Database updated: Report {report_id} marked as completed")
+                    
+                except Exception as db_error:
+                    print(f"  ✗ DATABASE UPDATE ERROR: {db_error}")
+                    db_session.rollback()
+            else:
+                print(f"  ⚠ No report_id available to update")
+                
+        except Exception as e:
+            print(f"  ✗ REPORT ERROR: {e}")
+            
+            # Update status to failed if generation fails
+            if report_id:
+                try:
+                    stmt = update(Report).where(Report.id == report_id).values(
+                        status=ReportStatus.failed,
+                        updated_at=datetime.utcnow()
+                    )
+                    
+                    db_session.execute(stmt)
+                    db_session.commit()
+                    
+                    print(f"  ✓ Database updated: Report {report_id} marked as failed")
+                except Exception as db_error:
+                    print(f"  ✗ DATABASE UPDATE ERROR: {db_error}")
+                    db_session.rollback()
+
+    # Update artifacts
+    new_artifacts = artifacts.copy()
+    new_artifacts["final_report"] = report_paths
+    new_artifacts["report_id"] = report_id
+
+    print("="*60 + "\n")
+    
     return {
-        "messages": [AIMessage(content=f"Reports generated: {report_paths}")],
+        "messages": [AIMessage(content=f"✓ Reports generated: {report_paths}")],
         "final_report": report_paths,
-        "artifacts": current_artifacts
+        "artifacts": new_artifacts,
     }
 
 # --- Graph Construction ---

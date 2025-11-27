@@ -14,12 +14,18 @@ import { ApiService, CreateJobRequest } from '../../../services/api.service';
 export class CreateJobComponent {
   topic: string = '';
   documents: File[] = [];
-  toolConfig: { [key: string]: boolean } = {
-    web_search: true,
-    rag: true,
-    compliance: true,
-    citation_validation: true
-  };
+  toolConfig: {
+    web_search: boolean;
+    rag: boolean;
+    compliance: boolean;
+    citation_validation: boolean;
+    [key: string]: boolean;
+  } = {
+      web_search: true,
+      rag: true,
+      compliance: true,
+      citation_validation: true
+    };
 
   errors: { [key: string]: string } = {};
   loading: boolean = false;
@@ -27,7 +33,7 @@ export class CreateJobComponent {
   constructor(
     private apiService: ApiService,
     private router: Router
-  ) {}
+  ) { }
 
   onFileSelected(event: any) {
     const files = Array.from(event.target.files) as File[];

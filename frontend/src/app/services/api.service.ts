@@ -14,14 +14,23 @@ export interface Job {
   created_at: string;
   started_at?: string;
   updated_at: string;
+  reports?: Report[];
 }
 
 export interface Report {
   id: number;
+  title: string;
+  type: string;
+  status: 'pending' | 'generating' | 'completed' | 'failed';
+  content: any; // Structured JSON
+  file_url?: string;
+  version: number;
+  user_id: number;
   job_id: number;
-  content: string;
-  citations?: any[];
   created_at: string;
+  updated_at: string;
+  generated_at?: string;
+  report_metadata?: any;
 }
 
 export interface CreateJobRequest {
@@ -39,7 +48,7 @@ export class ApiService {
   constructor(
     private http: HttpClient,
     private authService: AuthService
-  ) {}
+  ) { }
 
   private getHeaders(): HttpHeaders {
     const authHeaders = this.authService.getAuthHeaders();
@@ -124,7 +133,7 @@ export class ApiService {
     );
   }
 
-  updateReport(reportId: number, content: string): Observable<Report> {
+  updateReport(reportId: number, content: any): Observable<Report> {
     return this.http.put<Report>(
       `${environment.apiBaseUrl}/reports/${reportId}`,
       { content },
@@ -134,13 +143,17 @@ export class ApiService {
 
   // Chat
   sendChatMessage(message: string, reportId?: number): Observable<{ response: string }> {
-    const body: any = { message };
     if (reportId) {
-      body.report_id = reportId;
+      return this.http.post<{ response: string }>(
+        `${environment.apiBaseUrl}/reports/${reportId}/chat`,
+        { message },
+        { headers: this.getHeaders() }
+      );
     }
+
     return this.http.post<{ response: string }>(
       `${environment.apiBaseUrl}/chat`,
-      body,
+      { message },
       { headers: this.getHeaders() }
     );
   }

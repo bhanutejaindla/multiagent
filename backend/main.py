@@ -15,6 +15,7 @@ from .database import create_db_and_tables, get_session
 from .models import Job, User, JobStatus
 
 from sqlmodel import Session, select
+from sqlalchemy.orm import selectinload
 from mcp_servers.research.server import web_search
 from mcp_servers.compliance.server import redact_pii
 from mcp_servers.citation_validation.server import verify_citations_internal, parse_web_search_results
@@ -272,7 +273,7 @@ async def get_job(
     current_user: User = Depends(get_current_user),
     session: Session = Depends(get_session)
 ):
-    statement = select(Job).where(Job.id == job_id)
+    statement = select(Job).where(Job.id == job_id).options(selectinload(Job.reports))
     job = session.exec(statement).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -359,6 +360,8 @@ async def ingest_document(
 # --- Include Routers ---
 from .routes.research import router as research_router
 from .routes.admin import router as admin_router
+from .routes.reports import router as reports_router
 
 app.include_router(research_router)
 app.include_router(admin_router)
+app.include_router(reports_router)

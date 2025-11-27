@@ -24,6 +24,7 @@ class User(SQLModel, table=True):
     name: str # Keeping for backward compatibility or display name
     quota_limit: int = Field(default=10)
     jobs: List["Job"] = Relationship(back_populates="user")
+    # reports: List["Report"] = Relationship(back_populates="user") # Uncomment if needed for back_populates
 
 class ToolState(SQLModel, table=True):
     __tablename__ = "tool_states"
@@ -53,3 +54,43 @@ class Job(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
     
     agents: List[Agent] = Relationship(back_populates="current_job")
+    reports: List["Report"] = Relationship(back_populates="job")
+
+class ReportStatus(str, Enum):
+    pending = "pending"
+    generating = "generating"
+    completed = "completed"
+    failed = "failed"
+
+class Report(SQLModel, table=True):
+    __tablename__ = "reports"
+    id: Optional[int] = Field(default=None, primary_key=True)
+    title: str
+    type: str
+    status: ReportStatus = Field(default=ReportStatus.pending)
+    
+    content: Optional[Dict[str, Any]] = Field(default=None, sa_column=Column(JSON))
+    """
+    Example content:
+    {
+        "executive_summary": "...",
+        "findings": [...],
+        "risks": [...],
+        "citations": [...]
+    }
+    """
+    
+    file_url: Optional[str] = None
+    version: int = Field(default=1)
+    
+    user_id: int = Field(foreign_key="users.id", index=True)
+    # user: Optional[User] = Relationship(back_populates="reports") # User needs 'reports' relationship
+    
+    job_id: Optional[int] = Field(default=None, foreign_key="jobs.id")
+    job: Optional[Job] = Relationship(back_populates="reports")
+    
+    report_metadata: Optional[Dict[str, Any]] = Field(default=None, sa_column=Column(JSON))
+    
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    updated_at: datetime = Field(default_factory=datetime.utcnow)
+    generated_at: Optional[datetime] = None

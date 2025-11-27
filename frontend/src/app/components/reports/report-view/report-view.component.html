@@ -2,7 +2,8 @@
   <div class="report-header">
     <div class="header-content">
       <div>
-        <h1>Report #{{ reportId }}</h1>
+        <h1>{{ report?.title || 'Report #' + reportId }}</h1>
+        <div class="report-type" *ngIf="report?.type">{{ report?.type | titlecase }}</div>
         <a routerLink="/dashboard" class="btn-link">← Back to Dashboard</a>
       </div>
       <div class="header-actions">
@@ -26,26 +27,83 @@
 
       <div *ngIf="report && !loading" class="report-body">
         <div class="report-meta">
+          <span class="meta-item">
+            Status:
+            <span class="status-badge" [ngClass]="'status-' + (report.status || 'pending')">
+              {{ report.status || 'pending' }}
+            </span>
+          </span>
           <span class="meta-item">Created: {{ report.created_at | date:'medium' }}</span>
-          <span class="meta-item" *ngIf="report.citations">
-            Citations: {{ report.citations.length }}
+          <span class="meta-item" *ngIf="report.updated_at && report.updated_at !== report.created_at">Updated: {{
+            report.updated_at | date:'medium' }}</span>
+          <span class="meta-item" *ngIf="report.generated_at">Generated: {{ report.generated_at | date:'medium'
+            }}</span>
+          <span class="meta-item">Version: {{ report.version }}</span>
+          <span class="meta-item" *ngIf="report.content?.citations">
+            Citations: {{ report.content.citations.length }}
           </span>
         </div>
 
-        <div class="report-text" [innerHTML]="parseContent(report.content)"></div>
+        <!-- Metadata Section -->
+        <div class="metadata-section" *ngIf="report.report_metadata">
+          <h3>Report Details</h3>
+          <div class="metadata-grid">
+            <div class="meta-pair" *ngIf="report.report_metadata.verification_score">
+              <span class="label">Verification Score:</span>
+              <span class="value">{{ report.report_metadata.verification_score }}</span>
+            </div>
+            <div class="meta-pair" *ngIf="report.report_metadata.compliance_assessment">
+              <span class="label">Compliance:</span>
+              <span class="value">{{ report.report_metadata.compliance_assessment }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="report-text">
+          <!-- Structured Content Display -->
+          <div *ngIf="report.content?.executive_summary" class="section">
+            <h3>Executive Summary</h3>
+            <div [innerHTML]="parseContent(report.content.executive_summary)"></div>
+          </div>
+
+          <div *ngIf="report.content?.findings" class="section">
+            <h3>Findings</h3>
+            <ul>
+              <li *ngFor="let finding of report.content.findings">{{ finding }}</li>
+            </ul>
+          </div>
+
+          <div *ngIf="report.content?.risks" class="section">
+            <h3>Risks</h3>
+            <ul>
+              <li *ngFor="let risk of report.content.risks">{{ risk }}</li>
+            </ul>
+          </div>
+
+          <!-- Fallback for unstructured content -->
+          <div *ngIf="!report.content?.executive_summary && report.content?.full_text"
+            [innerHTML]="parseContent(report.content.full_text)">
+          </div>
+
+          <div *ngIf="!report.content?.executive_summary && !report.content?.full_text && isString(report.content)"
+            [innerHTML]="parseContent(report.content)">
+          </div>
+        </div>
 
         <!-- Citations Section -->
-        <div *ngIf="report.citations && report.citations.length > 0" class="citations-section">
+        <!-- Citations Section -->
+        <div *ngIf="report.content?.citations && report.content.citations.length > 0" class="citations-section">
           <h3>Citations</h3>
           <div class="citations-list">
-            <div *ngFor="let citation of report.citations; let i = index" class="citation-item">
+            <div *ngFor="let citation of report.content.citations; let i = index" class="citation-item">
               <span class="citation-number">[{{ i + 1 }}]</span>
               <div class="citation-content">
                 <div class="citation-title" *ngIf="citation.title">{{ citation.title }}</div>
                 <div class="citation-url" *ngIf="citation.url">
                   <a [href]="citation.url" target="_blank">{{ citation.url }}</a>
                 </div>
-                <div class="citation-snippet" *ngIf="citation.snippet">{{ citation.snippet }}</div>
+                <div class="citation-snippet" *ngIf="citation.snippet || citation.text">{{ citation.snippet ||
+                  citation.text }}</div>
               </div>
             </div>
           </div>
